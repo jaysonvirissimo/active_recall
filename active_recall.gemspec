@@ -37,7 +37,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rdoc'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'sqlite3'
-  spec.add_development_dependency 'timecop'
   spec.add_runtime_dependency 'activerecord', '~> 5.2.3'
-  spec.add_runtime_dependency 'activesupport'
+  spec.add_runtime_dependency 'activesupport', '~> 5.2.3'
 end
