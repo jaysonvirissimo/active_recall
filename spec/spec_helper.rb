@@ -2,7 +2,6 @@
 
 require 'active_record'
 require 'sqlite3'
-require 'timecop'
 require 'active_recall'
 
 ActiveRecord::Base.establish_connection(

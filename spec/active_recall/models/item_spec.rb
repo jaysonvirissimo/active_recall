@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'active_support/testing/time_helpers'
 
 describe ActiveRecall::Item do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:user) { User.create!(name: 'Robert') }
   let(:word) do
     Word.create!(
@@ -78,14 +81,15 @@ describe ActiveRecall::Item do
       end
 
       it 'words should expire and move from known to expired' do
-        # TODO: Remove Timecop dependency.
-        # HINT: Replace references to current time with dependency injection.
+        future_time = Time.current + 4.days
+
         user.right_answer_for!(word)
         expect(user.words.known).to eq([word])
-        Timecop.travel(4.days)
-        expect(user.words.known).to eq([])
-        expect(user.words.expired).to eq([word])
-        Timecop.return
+
+        travel_to(future_time) do
+          expect(user.words.known).to eq([])
+          expect(user.words.expired).to eq([word])
+        end
       end
     end
   end
