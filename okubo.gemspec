@@ -15,13 +15,13 @@ Gem::Specification.new do |gem|
   gem.version       = Okubo::VERSION
 
   gem.add_runtime_dependency 'activesupport'
-  gem.add_runtime_dependency 'activerecord'
+  gem.add_runtime_dependency 'activerecord', '~> 5.2.3'
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'rdoc'
   gem.add_development_dependency 'sqlite3'
   gem.add_development_dependency 'timecop'
-  
+
   gem.require_path = 'lib'
   gem.files = %w(README.md Rakefile) + Dir.glob("{lib,spec}/**/*")
 end
