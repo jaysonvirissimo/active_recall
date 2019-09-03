@@ -11,7 +11,7 @@ module Okubo
     end
 
     def remove_deck
-      deck = Okubo::Deck.first(:conditions => {:user_id => self.id, :user_type => self.class.name})
+      deck = Okubo::Deck.where(user_id: self.id, user_type: self.class.name).first
       deck.destroy
     end
   end
