@@ -30,8 +30,8 @@ describe Okubo::Deck do
 
     it "should remove words from the word list (but not the model itself)" do
       @user.words.delete(@word)
-      @user.words.include?(@word).should be_false
-      @word.destroyed?.should be_false
+      expect(@user.words).not_to include(@word)
+      expect(@user).not_to be_destroyed
     end
 
     it "should tell you what word was last added to the deck" do
@@ -62,14 +62,14 @@ describe Okubo::Deck do
     it "should allow you to get one word only" do
       @user.words << @word
       @user.words << Word.create!(:kanji => "日本語1", :kana => "にほんご1", :translation => "Japanese language")
-      @user.words.known.count.should == 0
+      expect(@user.words.known.count).to be_zero
       word = @user.words.next
-      @user.words.untested.include?(word).should be_true
+      expect(@user.words.untested).to include(word)
       @user.right_answer_for!(word)
       word = @user.words.next
-      @user.words.untested.include?(word).should be_true
+      expect(@user.words.untested).to include(word)
       @user.right_answer_for!(word)
-      @user.words.next.should be_nil
+      expect(@user.words.next).to_not be
     end
   end
 
@@ -77,9 +77,9 @@ describe Okubo::Deck do
     it "should delete itself and all item information when the source model is deleted" do
       deck = @user.words
       @user.destroy
-      Okubo::Deck.exists?(:user_id => @user.id).should be_false
-      Okubo::Item.exists?(:deck_id => deck.id).should be_false
-      @word.destroyed?.should be_false
+      expect(Okubo::Deck.exists?(:user_id => @user.id)).to be_falsey
+      expect(Okubo::Item.exists?(:deck_id => deck.id)).to be_falsey
+      expect(@word).to_not be_destroyed
     end
   end
 end
