@@ -2,10 +2,10 @@ require 'rails/generators'
 require 'rails/generators/migration'
 require 'rails/generators/active_record'
 
-class OkuboGenerator < Rails::Generators::Base
+class ActiveRecallGenerator < Rails::Generators::Base
   include Rails::Generators::Migration
 
-  desc "Creates migration files required by the okubo spaced repetition gem."
+  desc "Creates migration files required by the active_recall spaced repetition gem."
 
   self.source_paths << File.join(File.dirname(__FILE__), 'templates')
 
@@ -14,8 +14,8 @@ class OkuboGenerator < Rails::Generators::Base
   end
 
   def create_migration_files
-    create_migration_file_if_not_exist 'create_okubo_tables'
-    create_migration_file_if_not_exist 'add_okubo_item_answer_counts'
+    create_migration_file_if_not_exist 'create_active_recall_tables'
+    create_migration_file_if_not_exist 'add_active_recall_item_answer_counts'
   end
 
   private

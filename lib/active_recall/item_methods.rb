@@ -1,4 +1,4 @@
-module Okubo
+module ActiveRecall
   module ItemMethods
     def right_answer_for!(item)
       i = self.deck.items.where(:source_id => item.id).first

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 require 'spec_helper'
 
-describe Okubo::Deck do
+describe ActiveRecall::Deck do
   before(:each) do
     @word = Word.create!(:kanji => "日本語", :kana => "にほんご", :translation => "Japanese language")
     @user = User.create!(:name => "Robert")
@@ -77,8 +77,8 @@ describe Okubo::Deck do
     it "should delete itself and all item information when the source model is deleted" do
       deck = @user.words
       @user.destroy
-      expect(Okubo::Deck.exists?(:user_id => @user.id)).to be_falsey
-      expect(Okubo::Item.exists?(:deck_id => deck.id)).to be_falsey
+      expect(ActiveRecall::Deck.exists?(:user_id => @user.id)).to be_falsey
+      expect(ActiveRecall::Item.exists?(:deck_id => deck.id)).to be_falsey
       expect(@word).to_not be_destroyed
     end
   end

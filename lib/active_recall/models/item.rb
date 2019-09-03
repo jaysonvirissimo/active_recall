@@ -1,6 +1,6 @@
-module Okubo
+module ActiveRecall
   class Item < ActiveRecord::Base
-    self.table_name = "okubo_items"
+    self.table_name = "active_recall_items"
     belongs_to :deck
     belongs_to :source, :polymorphic => true
     scope :untested, lambda{where(["box = ? and last_reviewed is null", 0])}

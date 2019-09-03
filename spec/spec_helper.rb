@@ -1,7 +1,7 @@
 require 'active_record'
 require 'sqlite3'
 require 'timecop'
-require 'okubo'
+require 'active_recall'
 
 ActiveRecord::Base.establish_connection(
   :adapter => "sqlite3",
@@ -11,14 +11,14 @@ ActiveRecord::Base.establish_connection(
 ActiveRecord::Migration.verbose = false
 
 ActiveRecord::Schema.define do
-  # Okubo tables
-  create_table :okubo_decks do |t|
+  # ActiveRecall tables
+  create_table :active_recall_decks do |t|
     t.references  :user, :polymorphic => true
     t.timestamps
   end
-  add_index :okubo_decks, [:user_id, :user_type]
+  add_index :active_recall_decks, [:user_id, :user_type]
 
-  create_table :okubo_items do |t|
+  create_table :active_recall_items do |t|
     t.references  :deck
     t.references  :source, :polymorphic => true
     t.integer     :box, :default => 0
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define do
     t.timestamp   :next_review
     t.timestamps
   end
-  add_index :okubo_items, [:source_id, :source_type]
+  add_index :active_recall_items, [:source_id, :source_type]
 
   # Test application tables
   create_table :words do |t|

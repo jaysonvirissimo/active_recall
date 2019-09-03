@@ -12,7 +12,7 @@ RSpec::Core::RakeTask.new(:rspec) do |t|
   t.pattern = './spec/**/*_spec.rb'
 end
 
-spec = Gem::Specification.load("#{File.dirname(__FILE__)}/okubo.gemspec")
+spec = Gem::Specification.load("#{File.dirname(__FILE__)}/active_recall.gemspec")
 
 desc "Package gem."
 Gem::PackageTask.new(spec) do |pkg|

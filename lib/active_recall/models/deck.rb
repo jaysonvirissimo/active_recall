@@ -1,10 +1,10 @@
-module Okubo
+module ActiveRecall
   class Deck < ActiveRecord::Base
     include Enumerable
-    include Okubo::Base
-    self.table_name = "okubo_decks"
+    include ActiveRecall::Base
+    self.table_name = "active_recall_decks"
     belongs_to :user, :polymorphic => true
-    has_many :items, :class_name => "Okubo::Item", :dependent => :destroy
+    has_many :items, :class_name => "ActiveRecall::Item", :dependent => :destroy
 
     def each(&block)
       _items.each do |item|
@@ -26,7 +26,7 @@ module Okubo
 
     def <<(source)
       raise ArgumentError.new("Word already in the stack") if include?(source)
-      self.items << Okubo::Item.new(:deck => self, :source_id => source.id, :source_type => source.class.name)
+      self.items << ActiveRecall::Item.new(:deck => self, :source_id => source.id, :source_type => source.class.name)
     end
 
     def self.add_deck(user)
@@ -34,7 +34,7 @@ module Okubo
     end
 
     def delete(source)
-      item = Okubo::Item.new(:deck => self, :source_id => source.id, :source_type => source.class.name)
+      item = ActiveRecall::Item.new(:deck => self, :source_id => source.id, :source_type => source.class.name)
       item.destroy
     end
 

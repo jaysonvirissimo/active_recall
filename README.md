@@ -1,33 +1,34 @@
-Okubo [![Build Status](https://travis-ci.org/rgravina/okubo.png)](https://travis-ci.org/rgravina/okubo) [![Code Climate](https://codeclimate.com/github/rgravina/okubo.png)](https://codeclimate.com/github/rgravina/okubo)
-=====
+# ActiveRecall
 
-Okubo is a simple spaced-repetition system which you can associate with Active Record models to be learned
-(such as words in a foreign language) and users in your system. Users study these 
-words, and as they mark these attempts right or wrong, Okubo will determine when they should be reviewed
-next.
+**ActiveRecall** is a spaced-repetition system that allows you to treat arbitrary [ActiveRecord](https://github.com/rails/rails/tree/master/activerecord) models as if they were flashcards to be learned and reviewed.
+It it based on, and is intended to be backwards compatible with, the [okubo](https://github.com/rgravina/okubo) gem.
+The primary differentiating features are that it lets the user specify the scheduling algorithm and is fully compatible with Rails 6.
 
-Okubo determines the next study time for an item using the [Leitner System](http://en.wikipedia.org/wiki/Leitner_system).
-In the future it may support other popular algorithms, such as the Supermemo 2 algorithm.
+## Installation
 
-Installation
-------------
+Add this line to your application's Gemfile:
 
-Add to Gemfile (will put on rubygems once at 0.1):
-
+```ruby
+gem 'active_recall'
 ```
-gem 'okubo', :git => "git://github.com/rgravina/okubo.git"
-```
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install active_recall
 
 Run:
 
 ```
 bundle install
-rails generate okubo
+rails generate active_recall
 rake db:migrate
 ```
 
-Quick Start
------------
+## Usage
 
 Assume you have an application allowing your users to study words in a foreign language. Using the <code>has_deck</code> method
 you can set up a deck of flashcards that the user will study:
@@ -88,8 +89,8 @@ user.words.expired #=> [word]
 Reviewing
 ---------
 
-In addition to an <code>expired</code> method, Okubo provides a suggested reviewing sequence for all unknown words in the deck.
-Words are randomly chosen from all untested words, failed, and finally expired in order of precedence. 
+In addition to an <code>expired</code> method, ActiveRecall provides a suggested reviewing sequence for all unknown words in the deck.
+Words are randomly chosen from all untested words, failed, and finally expired in order of precedence.
 
 ```ruby
 user.words.review #=> [word]
@@ -107,19 +108,16 @@ user.right_answer_for!(word)
 user.words.next #=> nil
 ```
 
-Examples
---------
+## Development
 
-[Chuhi](https://github.com/rgravina/chuhi) is a Rails application which uses Okubo to schedule words. Have a look at the project source for real world usage. You can also [use the app online](http://chuhi.herokuapp.com/)!
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-Thanks!
--------
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
-* [activerecord-reputation-system](https://github.com/twitter/activerecord-reputation-system/) - for providing the design and implementation from which this gem is based.
-* [randym](https://github.com/randym/) - for enouraging me work on this gem in the first place.
-* [Tokyo Rails](http://www.tokyorails.com/) - for providing collaboration evenings where this gem was worked on.
-* [Reviewing the Kanji](http://kanji.koohii.com/) - for providing a great visual representation and implementation of the Leitner system.
+## Contributing
 
-Copyright and License
----------------------
-Okubo © 2012 by Robert Gravina. Okubo is licensed under the MIT license. Please see the LICENSE document for more information.
+Bug reports and pull requests are welcome on GitHub at https://github.com/jaysonvirissimo/active_recall.
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

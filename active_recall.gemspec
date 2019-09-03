@@ -1,18 +1,18 @@
 # -*- encoding: utf-8 -*-
-require File.join(File.dirname(__FILE__), 'lib', 'okubo', 'version')
+require File.join(File.dirname(__FILE__), 'lib', 'active_recall', 'version')
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["Robert Gravina"]
-  gem.email         = ["robert.gravina@gmail.com"]
-  gem.description   = %q{Okubo - a simple spaced-repetition system for Active Record models.}
-  gem.summary       = %q{Okubo is a simple spaced-repetition system for learning items, such as words and definitions in a foreign language, which you supply as Active Record models.}
-  gem.homepage      = "https://github.com/rgravina/okubo"
+  gem.authors       = ["Robert Gravina", "Jayson Virissimo"]
+  gem.email         = ["robert.gravina@gmail.com", "jayson.virissimo@asu.edu"]
+  gem.description   = %q{ActiveRecall - a simple spaced-repetition system for Active Record models.}
+  gem.summary       = %q{ActiveRecall is a simple spaced-repetition system for learning items, such as words and definitions in a foreign language, which you supply as Active Record models.}
+  gem.homepage      = "https://github.com/rgravina/active_recall"
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.name          = "okubo"
+  gem.name          = "active_recall"
   gem.require_paths = ["lib"]
-  gem.version       = Okubo::VERSION
+  gem.version       = ActiveRecall::VERSION
 
   gem.add_runtime_dependency 'activesupport'
   gem.add_runtime_dependency 'activerecord', '~> 5.2.3'
