@@ -1,27 +1,43 @@
-# -*- encoding: utf-8 -*-
-require File.join(File.dirname(__FILE__), 'lib', 'active_recall', 'version')
+# frozen_string_literal: true
 
-Gem::Specification.new do |gem|
-  gem.authors       = ["Robert Gravina", "Jayson Virissimo"]
-  gem.email         = ["robert.gravina@gmail.com", "jayson.virissimo@asu.edu"]
-  gem.description   = %q{ActiveRecall - a simple spaced-repetition system for Active Record models.}
-  gem.summary       = %q{ActiveRecall is a simple spaced-repetition system for learning items, such as words and definitions in a foreign language, which you supply as Active Record models.}
-  gem.homepage      = "https://github.com/rgravina/active_recall"
-  gem.files         = `git ls-files`.split($\)
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.name          = "active_recall"
-  gem.require_paths = ["lib"]
-  gem.version       = ActiveRecall::VERSION
+lib = File.expand_path('lib', __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'active_recall/version'
 
-  gem.add_runtime_dependency 'activesupport'
-  gem.add_runtime_dependency 'activerecord', '~> 5.2.3'
-  gem.add_development_dependency 'rake'
-  gem.add_development_dependency 'rspec'
-  gem.add_development_dependency 'rdoc'
-  gem.add_development_dependency 'sqlite3'
-  gem.add_development_dependency 'timecop'
+Gem::Specification.new do |spec|
+  spec.name          = 'active_recall'
+  spec.version       = ActiveRecall::VERSION
+  spec.authors       = ['Robert Gravina', 'Jayson Virissimo']
+  spec.email         = ['robert.gravina@gmail.com', 'jayson.virissimo@asu.edu']
+  spec.summary       = 'A spaced-repetition system'
+  spec.description   = 'A spaced-repetition system to be used with ActiveRecord models'
+  spec.homepage      = 'https://github.com/jaysonvirissimo/active_recall'
+  spec.license       = 'MIT'
 
-  gem.require_path = 'lib'
-  gem.files = %w(README.md Rakefile) + Dir.glob("{lib,spec}/**/*")
+  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
+  # to allow pushing to a single host or delete this section to allow pushing to any host.
+  if spec.respond_to?(:metadata)
+    spec.metadata['allowed_push_host'] = 'https://rubygems.org/'
+  else
+    raise 'RubyGems 2.0 or newer is required to protect against ' \
+      'public gem pushes.'
+  end
+
+  # Specify which files should be added to the gem when it is released.
+  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
+  spec.files = Dir.chdir(File.expand_path(__dir__)) do
+    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  end
+  spec.bindir        = 'exe'
+  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.require_paths = ['lib']
+
+  spec.add_development_dependency 'bundler', '~> 1.16'
+  spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'rdoc'
+  spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_development_dependency 'sqlite3'
+  spec.add_development_dependency 'timecop'
+  spec.add_runtime_dependency 'activerecord', '~> 5.2.3'
+  spec.add_runtime_dependency 'activesupport'
 end
