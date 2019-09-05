@@ -1,17 +1,13 @@
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe ActiveRecall::Base do
-  before(:each) do
-    @word = Word.create!(:kanji => "日本語", :kana => "にほんご", :translation => "Japanese language")
-    @user = User.create!(:name => "Robert")
-  end
+  let(:user) { User.create!(name: 'Robert') }
 
-  context "Mixin" do
-    describe "#has_deck" do
-      it "should add a decks method with name" do
-        expect(@user).to respond_to(:words)
-      end
+  describe '#has_deck' do
+    it 'should add a decks method with name' do
+      expect(user).to respond_to(:words)
     end
   end
 end
