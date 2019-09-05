@@ -1,78 +1,92 @@
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe ActiveRecall::Item do
-  before(:each) do
-    @word = Word.create!(:kanji => "日本語", :kana => "にほんご", :translation => "Japanese language")
-    @user = User.create!(:name => "Robert")
-    @user.words << @word
+  let(:user) { User.create!(name: 'Robert') }
+  let(:word) do
+    Word.create!(
+      kanji: '日本語',
+      kana: 'にほんご',
+      translation: 'Japanese language'
+    )
   end
 
-  context "Leitner box movement" do
-    it "should present a list of all words" do
-      @user.words.should == [@word]
-      @user.words.count.should == 1
+  before(:each) { user.words << word }
+
+  describe '#words' do
+    it 'should present a list of all words' do
+      expect(user.words).to eq([word])
+      expect(user.words.count).to eq(1)
     end
 
-    it "should start off in the untested stack" do
-      @user.words.untested.should == [@word]
-    end
-
-    it "correct answer should move it up one stack" do
-      @user.right_answer_for!(@word)
-      @user.words.untested.should == []
-      @user.words.box(1).should == [@word]
-      @user.words.known.should == [@word]
-    end
-
-    it "incorrect answer should move it to the failed stack" do
-      @user.wrong_answer_for!(@word)
-      @user.words.untested.should == []
-      @user.words.failed.should == [@word]
-      @word.stats.times_wrong.should == 1
-    end
-  end
-
-  context "Study schedule" do
-    it "when untested, next study time should be nil" do
-      @word.stats.next_review.should be_nil
-    end
-
-    it "when correct, next study time should gradually increase" do
-      Timecop.freeze(Time.now) do
-        @user.right_answer_for!(@word)
-        stats = @word.stats
-        stats.next_review.should == stats.last_reviewed + 3.days
-        stats.times_right.should == 1
-        @user.right_answer_for!(@word)
-        stats.reload
-        stats.next_review.should == stats.last_reviewed + 7.days
-        stats.times_right.should == 2
-        @user.right_answer_for!(@word)
-        stats.reload
-        stats.next_review.should == stats.last_reviewed + 14.days
-        @user.right_answer_for!(@word)
-        stats.reload
-        stats.next_review.should == stats.last_reviewed + 30.days
-        @user.right_answer_for!(@word)
-        stats.reload
-        stats.next_review.should == stats.last_reviewed + 60.days
-        @user.right_answer_for!(@word)
-        stats.reload
-        stats.next_review.should == stats.last_reviewed + 120.days
-        @user.right_answer_for!(@word)
-        stats.reload
-        stats.next_review.should == stats.last_reviewed + 240.days
+    describe '.untested' do
+      it 'should start off in the untested stack' do
+        expect(user.words.untested).to eq([word])
       end
     end
 
-    it "words should expire and move from known to expired" do
-      @user.right_answer_for!(@word)
-      @user.words.known.should == [@word]
-      Timecop.travel(4.days)
-      @user.words.known.should == []
-      @user.words.expired.should == [@word]
-      Timecop.return
+    describe '.known' do
+      it 'correct answer should move it up one stack' do
+        user.right_answer_for!(word)
+        expect(user.words.untested).to eq([])
+        expect(user.words.box(1)).to eq([word])
+        expect(user.words.known).to eq([word])
+      end
+    end
+
+    describe '.failed' do
+      it 'incorrect answer should move it to the failed stack' do
+        user.wrong_answer_for!(word)
+        expect(user.words.untested).to eq([])
+        expect(user.words.failed).to eq([word])
+        expect(word.stats.times_wrong).to eq(1)
+      end
+    end
+  end
+
+  describe '.stats' do
+    describe '.next_review' do
+      it 'when untested, next study time should be nil' do
+        expect(word.stats.next_review).not_to be
+      end
+
+      it 'when correct, next study time should gradually increase' do
+        Timecop.freeze(Time.now) do
+          user.right_answer_for!(word)
+          stats = word.stats
+          expect(stats.next_review).to eq(stats.last_reviewed + 3.days)
+          expect(stats.times_right).to eq(1)
+          user.right_answer_for!(word)
+          stats.reload
+          expect(stats.next_review).to eq(stats.last_reviewed + 7.days)
+          expect(stats.times_right).to eq(2)
+          user.right_answer_for!(word)
+          stats.reload
+          expect(stats.next_review).to eq(stats.last_reviewed + 14.days)
+          user.right_answer_for!(word)
+          stats.reload
+          expect(stats.next_review).to eq(stats.last_reviewed + 30.days)
+          user.right_answer_for!(word)
+          stats.reload
+          expect(stats.next_review).to eq(stats.last_reviewed + 60.days)
+          user.right_answer_for!(word)
+          stats.reload
+          expect(stats.next_review).to eq(stats.last_reviewed + 120.days)
+          user.right_answer_for!(word)
+          stats.reload
+          expect(stats.next_review).to eq(stats.last_reviewed + 240.days)
+        end
+      end
+
+      it 'words should expire and move from known to expired' do
+        user.right_answer_for!(word)
+        expect(user.words.known).to eq([word])
+        Timecop.travel(4.days)
+        expect(user.words.known).to eq([])
+        expect(user.words.expired).to eq([word])
+        Timecop.return
+      end
     end
   end
 end
