@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails/generators'
 require 'rails/generators/migration'
 require 'rails/generators/active_record'
@@ -5,9 +7,9 @@ require 'rails/generators/active_record'
 class ActiveRecallGenerator < Rails::Generators::Base
   include Rails::Generators::Migration
 
-  desc "Creates migration files required by the active_recall spaced repetition gem."
+  desc 'Creates migration files required by the active_recall spaced repetition gem.'
 
-  self.source_paths << File.join(File.dirname(__FILE__), 'templates')
+  source_paths << File.join(File.dirname(__FILE__), 'templates')
 
   def self.next_migration_number(path)
     ActiveRecord::Generators::Base.next_migration_number(path)

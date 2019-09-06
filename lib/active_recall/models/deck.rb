@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module ActiveRecall
   class Deck < ActiveRecord::Base
     include Enumerable
     include ActiveRecall::Base
-    self.table_name = "active_recall_decks"
-    belongs_to :user, :polymorphic => true
-    has_many :items, :class_name => "ActiveRecall::Item", :dependent => :destroy
+    self.table_name = 'active_recall_decks'
+    belongs_to :user, polymorphic: true
+    has_many :items, class_name: 'ActiveRecall::Item', dependent: :destroy
 
     def each(&block)
       _items.each do |item|
@@ -21,12 +23,13 @@ module ActiveRecall
     end
 
     def _items
-      source_class.find(self.items.pluck(:source_id))
+      source_class.find(items.pluck(:source_id))
     end
 
     def <<(source)
-      raise ArgumentError.new("Word already in the stack") if include?(source)
-      self.items << ActiveRecall::Item.new(:deck => self, :source_id => source.id, :source_type => source.class.name)
+      raise ArgumentError, 'Word already in the stack' if include?(source)
+
+      items << ActiveRecall::Item.new(deck: self, source_id: source.id, source_type: source.class.name)
     end
 
     def self.add_deck(user)
@@ -34,7 +37,7 @@ module ActiveRecall
     end
 
     def delete(source)
-      item = ActiveRecall::Item.new(:deck => self, :source_id => source.id, :source_type => source.class.name)
+      item = ActiveRecall::Item.new(deck: self, source_id: source.id, source_type: source.class.name)
       item.destroy
     end
 
@@ -42,42 +45,42 @@ module ActiveRecall
     # Returns a suggested word review sequence.
     #
     def review
-      [:untested, :failed, :expired].inject([]) do |words, s| 
-        words += self.items.send(s).order('random()').map(&:source)
+      %i[untested failed expired].inject([]) do |words, s|
+        words += items.send(s).order('random()').map(&:source)
       end
     end
 
     def next
       word = nil
-      [:untested, :failed, :expired].each do |category|
-        word = self.items.send(category).order('random()').limit(1).map(&:source).first
+      %i[untested failed expired].each do |category|
+        word = items.send(category).order('random()').limit(1).map(&:source).first
         break if word
       end
       word
     end
 
     def last
-      self.items.order('created_at desc').limit(1).first.try(:source)
+      items.order('created_at desc').limit(1).first.try(:source)
     end
 
     def untested
-      source_class.find(self.items.untested.pluck(:source_id))
+      source_class.find(items.untested.pluck(:source_id))
     end
 
     def failed
-      source_class.find(self.items.failed.pluck(:source_id))
+      source_class.find(items.failed.pluck(:source_id))
     end
 
     def known
-      source_class.find(self.items.known.pluck(:source_id))
+      source_class.find(items.known.pluck(:source_id))
     end
 
     def expired
-      source_class.find(self.items.expired.pluck(:source_id))
+      source_class.find(items.expired.pluck(:source_id))
     end
 
     def box(number)
-      source_class.find(self.items.where(:box =>  number).pluck(:source_id))
+      source_class.find(items.where(box: number).pluck(:source_id))
     end
 
     def source_class
