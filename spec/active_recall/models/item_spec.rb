@@ -52,31 +52,29 @@ describe ActiveRecall::Item do
       end
 
       it 'when correct, next study time should gradually increase' do
-        Timecop.freeze(Time.now) do
-          user.right_answer_for!(word)
-          stats = word.stats
-          expect(stats.next_review).to eq(stats.last_reviewed + 3.days)
-          expect(stats.times_right).to eq(1)
-          user.right_answer_for!(word)
-          stats.reload
-          expect(stats.next_review).to eq(stats.last_reviewed + 7.days)
-          expect(stats.times_right).to eq(2)
-          user.right_answer_for!(word)
-          stats.reload
-          expect(stats.next_review).to eq(stats.last_reviewed + 14.days)
-          user.right_answer_for!(word)
-          stats.reload
-          expect(stats.next_review).to eq(stats.last_reviewed + 30.days)
-          user.right_answer_for!(word)
-          stats.reload
-          expect(stats.next_review).to eq(stats.last_reviewed + 60.days)
-          user.right_answer_for!(word)
-          stats.reload
-          expect(stats.next_review).to eq(stats.last_reviewed + 120.days)
-          user.right_answer_for!(word)
-          stats.reload
-          expect(stats.next_review).to eq(stats.last_reviewed + 240.days)
-        end
+        user.right_answer_for!(word)
+        stats = word.stats
+        expect(stats.next_review).to eq(stats.last_reviewed + 3.days)
+        expect(stats.times_right).to eq(1)
+        user.right_answer_for!(word)
+        stats.reload
+        expect(stats.next_review).to eq(stats.last_reviewed + 7.days)
+        expect(stats.times_right).to eq(2)
+        user.right_answer_for!(word)
+        stats.reload
+        expect(stats.next_review).to eq(stats.last_reviewed + 14.days)
+        user.right_answer_for!(word)
+        stats.reload
+        expect(stats.next_review).to eq(stats.last_reviewed + 30.days)
+        user.right_answer_for!(word)
+        stats.reload
+        expect(stats.next_review).to eq(stats.last_reviewed + 60.days)
+        user.right_answer_for!(word)
+        stats.reload
+        expect(stats.next_review).to eq(stats.last_reviewed + 120.days)
+        user.right_answer_for!(word)
+        stats.reload
+        expect(stats.next_review).to eq(stats.last_reviewed + 240.days)
       end
 
       it 'words should expire and move from known to expired' do
