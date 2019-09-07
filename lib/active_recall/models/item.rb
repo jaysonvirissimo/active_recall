@@ -7,15 +7,19 @@ module ActiveRecall
     belongs_to :source, polymorphic: true
     scope :untested, -> { where(['box = ? and last_reviewed is null', 0]) }
     scope :failed, -> { where(['box = ? and last_reviewed is not null', 0]) }
-    scope :known, ->(current_time: Time.current) { where(['box > ? and next_review > ?', 0, current_time]) }
-    scope :expired, ->(current_time: Time.current) { where(['box > ? and next_review <= ?', 0, current_time]) }
+    scope :known, lambda { |current_time: Time.current|
+      where(['box > ? and next_review > ?', 0, current_time])
+    }
+    scope :expired, lambda { |current_time: Time.current|
+      where(['box > ? and next_review <= ?', 0, current_time])
+    }
 
     def right!
-      LeitnerSystem.new(self).right.save!
+      update!(LeitnerSystem.new(self).right)
     end
 
     def wrong!
-      LeitnerSystem.new(self).wrong.save!
+      update!(LeitnerSystem.new(self).wrong)
     end
 
     class LeitnerSystem
@@ -27,19 +31,21 @@ module ActiveRecall
       end
 
       def right
-        item[:box] += 1
-        item.times_right += 1
-        item.last_reviewed = current_time
-        item.next_review = item.last_reviewed + DELAYS[[DELAYS.count, item.box].min - 1].days
-        item
+        {
+          box: item.box + 1,
+          times_right: item.times_right + 1,
+          last_reviewed: current_time,
+          next_review: (current_time + DELAYS[[DELAYS.count, item.box + 1].min - 1].days)
+        }
       end
 
       def wrong
-        item[:box] = 0
-        item.times_wrong += 1
-        item.last_reviewed = current_time
-        item.next_review = nil
-        item
+        {
+          box: 0,
+          times_wrong: item.times_wrong + 1,
+          last_reviewed: current_time,
+          next_review: nil
+        }
       end
 
       private
