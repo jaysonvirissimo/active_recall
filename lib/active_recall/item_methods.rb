@@ -2,15 +2,15 @@
 
 module ActiveRecall
   module ItemMethods
-    def right_answer_for!(item, current_time: Time.current)
+    def right_answer_for!(item)
       i = deck.items.where(source_id: item.id).first
-      i.right!(current_time: current_time)
+      i.right!
       i.save!
     end
 
-    def wrong_answer_for!(item, current_time: Time.current)
+    def wrong_answer_for!(item)
       i = deck.items.where(source_id: item.id).first
-      i.wrong!(current_time: current_time)
+      i.wrong!
       i.save!
     end
   end
