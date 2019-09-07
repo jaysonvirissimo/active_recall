@@ -3,6 +3,14 @@
 class LeitnerSystem
   DELAYS = [3, 7, 14, 30, 60, 120, 240].freeze
 
+  def self.right(item, current_time: Time.current)
+    new(item, current_time: current_time).right
+  end
+
+  def self.wrong(item, current_time: Time.current)
+    new(item, current_time: current_time).wrong
+  end
+
   def initialize(item, current_time: Time.current)
     @item = item
     @current_time = current_time

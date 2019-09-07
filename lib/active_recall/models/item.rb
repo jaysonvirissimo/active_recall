@@ -15,11 +15,11 @@ module ActiveRecall
     }
 
     def right!
-      update!(LeitnerSystem.new(self).right)
+      update!(LeitnerSystem.right(self))
     end
 
     def wrong!
-      update!(LeitnerSystem.new(self).wrong)
+      update!(LeitnerSystem.wrong(self))
     end
   end
 end
