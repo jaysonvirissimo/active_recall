@@ -1,4 +1,4 @@
-# ActiveRecall
+# ActiveRecall [![Build Status](https://travis-ci.org/jaysonvirissimo/active_recall.svg?branch=master)](https://travis-ci.org/jaysonvirissimo/active_recall)
 
 **ActiveRecall** is a spaced-repetition system that allows you to treat arbitrary [ActiveRecord](https://github.com/rails/rails/tree/master/activerecord) models as if they were flashcards to be learned and reviewed.
 It it based on, and is intended to be backwards compatible with, the [okubo](https://github.com/rgravina/okubo) gem.
