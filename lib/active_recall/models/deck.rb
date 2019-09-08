@@ -41,19 +41,16 @@ module ActiveRecall
       item.destroy
     end
 
-    #
-    # Returns a suggested word review sequence.
-    #
     def review
       %i[untested failed expired].inject([]) do |words, s|
-        words += items.send(s).order('random()').map(&:source)
+        words += items.send(s).order(random_order_function).map(&:source)
       end
     end
 
     def next
       word = nil
       %i[untested failed expired].each do |category|
-        word = items.send(category).order('random()').limit(1).map(&:source).first
+        word = items.send(category).order(random_order_function).limit(1).map(&:source).first
         break if word
       end
       word
@@ -85,6 +82,20 @@ module ActiveRecall
 
     def source_class
       user.deck_name.to_s.singularize.titleize.constantize
+    end
+
+    private
+
+    def random_order_function
+      if mysql?
+        'RAND()'
+      else
+        'random()'
+      end
+    end
+
+    def mysql?
+      source_class.connection.adapter_name == 'Mysql2'
     end
   end
 end
