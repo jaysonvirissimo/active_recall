@@ -78,6 +78,8 @@ describe ActiveRecall::Item do
       end
 
       it 'words should expire and move from known to expired' do
+        # TODO: Remove Timecop dependency.
+        # HINT: Replace references to current time with dependency injection.
         user.right_answer_for!(word)
         expect(user.words.known).to eq([word])
         Timecop.travel(4.days)
