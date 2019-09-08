@@ -8,10 +8,10 @@ module ActiveRecall
     belongs_to :user, polymorphic: true
     has_many :items, class_name: 'ActiveRecall::Item', dependent: :destroy
 
-    def each(&block)
+    def each
       _items.each do |item|
         if block_given?
-          block.call item
+          yield item
         else
           yield item
         end
@@ -87,11 +87,7 @@ module ActiveRecall
     private
 
     def random_order_function
-      if mysql?
-        'RAND()'
-      else
-        'random()'
-      end
+      Arel.sql(mysql? ? 'RAND()' : 'random()')
     end
 
     def mysql?
