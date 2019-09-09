@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateActiveRecallTables < ActiveRecord::Migration
+class CreateActiveRecallTables < ActiveRecord::Migration[5.2]
   def self.up
     create_table :active_recall_decks do |t|
       t.references :user, polymorphic: true
