@@ -1,4 +1,3 @@
-# TODO: Figure out a way to selectively add this with rails generate 
 # frozen_string_literal: true
 
 class MigrateOkuboToActiveRecall < ActiveRecord::Migration[5.2]
@@ -18,8 +17,8 @@ class MigrateOkuboToActiveRecall < ActiveRecord::Migration[5.2]
         deck_attributes[:id] == item_attributes[:deck_id]
       end.each do |item_attributes|
         item_create_attributes = item_attributes
-          .except(:id, :created_at, :updated_at)
-          .merge(deck_id: deck.id)
+                                 .except(:id, :created_at, :updated_at)
+                                 .merge(deck_id: deck.id)
         ActiveRecall::Item.create!(item_create_attributes)
       end
     end
