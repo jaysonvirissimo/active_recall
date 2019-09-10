@@ -15,18 +15,18 @@ gem 'active_recall'
 And then execute:
 
     $ bundle
+    $ rails generate active_recall
+    $ rails db:migrate
+
+Or, if you were using the Okubo gem and want to migrate your data over, execute:
+
+    $ bundle
+    $ rails generate active_recall --migrate_data true
+    $ rails db:migrate
 
 Or install it yourself as:
 
     $ gem install active_recall
-
-Run:
-
-```
-bundle install
-rails generate active_recall
-rake db:migrate
-```
 
 ## Usage
 
