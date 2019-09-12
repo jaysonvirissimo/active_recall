@@ -15,11 +15,17 @@ module ActiveRecall
     }
 
     def right!
-      update!(LeitnerSystem.right(self))
+      update!(LeitnerSystem.right(scoring_attributes))
     end
 
     def wrong!
-      update!(LeitnerSystem.wrong(self))
+      update!(LeitnerSystem.wrong(scoring_attributes))
+    end
+
+    private
+
+    def scoring_attributes
+      attributes.symbolize_keys.slice(:box, :times_right, :times_wrong)
     end
   end
 end
