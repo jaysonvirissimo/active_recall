@@ -7,12 +7,14 @@ module ActiveRecall
     belongs_to :source, polymorphic: true
     scope :untested, -> { where(['box = ? and last_reviewed is null', 0]) }
     scope :failed, -> { where(['box = ? and last_reviewed is not null', 0]) }
-    scope :known, lambda { |current_time: Time.current|
-      where(['box > ? and next_review > ?', 0, current_time])
-    }
-    scope :expired, lambda { |current_time: Time.current|
+
+    def self.expired(current_time: Time.current)
       where(['box > ? and next_review <= ?', 0, current_time])
-    }
+    end
+
+    def self.known(current_time: Time.current)
+      where(['box > ? and next_review > ?', 0, current_time])
+    end
 
     def right!
       update!(LeitnerSystem.right(scoring_attributes))
