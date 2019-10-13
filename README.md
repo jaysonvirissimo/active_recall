@@ -30,8 +30,7 @@ Or install it yourself as:
 
 ## Usage
 
-Assume you have an application allowing your users to study words in a foreign language. Using the <code>has_deck</code> method
-you can set up a deck of flashcards that the user will study:
+Assume you have an application allowing your users to study words in a foreign language. Using the `has_deck` method you can set up a deck of flashcards that the user will study:
 
 ```ruby
 class Word < ActiveRecord::Base
@@ -48,7 +47,7 @@ word = Word.create!(:kanji => "日本語", :kana => "にほんご", :translation
 You can add words and record attempts to guess the word as right or wrong. Various methods exist to allow you to access subsets of this collection:
 
 ```ruby
-# Initally adding a word
+# Initially adding a word
 user.words << word
 user.words.untested #=> [word]
 
@@ -64,7 +63,7 @@ user.words.failed #=> [word]
 user.words #=> [word]
 ```
 
-As time passes words need to be reviewed to keep them fresh in memory:
+As time passes, words need to be reviewed to keep them fresh in memory:
 
 ```ruby
 # Three days later...
@@ -72,7 +71,7 @@ user.words.known #=> []
 user.words.expired #=> [word]
 ```
 
-Guessing a word correcly several times in a row results in the word taking longer to expire, and demonstrates mastery of that word.
+Guessing a word correctly several times in a row results in the word taking longer to expire, and demonstrates mastery of that word.
 
 ```ruby
 user.right_answer_for!(word)
@@ -89,7 +88,7 @@ user.words.expired #=> [word]
 Reviewing
 ---------
 
-In addition to an <code>expired</code> method, ActiveRecall provides a suggested reviewing sequence for all unknown words in the deck.
+In addition to an `expired` method, ActiveRecall provides a suggested reviewing sequence for all unknown words in the deck.
 Words are randomly chosen from all untested words, failed, and finally expired in order of precedence.
 
 ```ruby
