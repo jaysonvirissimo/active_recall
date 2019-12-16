@@ -85,13 +85,23 @@ describe ActiveRecall::Deck do
   end
 
   describe '#destroy' do
-    let(:deck) { user.words }
+    context 'when there is a deck' do
+      let(:deck) { user.words }
 
-    it 'should delete itself and all item information when the source model is deleted' do
-      deck && user.destroy
-      expect(ActiveRecall::Deck.exists?(user_id: user.id)).to be_falsey
-      expect(ActiveRecall::Item.exists?(deck_id: deck.id)).to be_falsey
-      expect(word).to_not be_destroyed
+      it 'should delete itself and all item information when the source model is deleted' do
+        deck && user.destroy
+        expect(ActiveRecall::Deck.exists?(user_id: user.id)).to be_falsey
+        expect(ActiveRecall::Item.exists?(deck_id: deck.id)).to be_falsey
+        expect(word).to_not be_destroyed
+      end
+    end
+
+    context 'before a deck has been created' do
+      it 'does not raise an error' do
+        expect do
+          user.destroy
+        end.not_to raise_error(NoMethodError)
+      end
     end
   end
 end
