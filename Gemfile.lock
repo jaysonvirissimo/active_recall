@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    active_recall (1.2.0)
+    active_recall (1.2.1)
       activerecord (>= 5.2.3)
       activesupport (>= 5.2.3)
 
