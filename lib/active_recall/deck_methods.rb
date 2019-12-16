@@ -13,8 +13,9 @@ module ActiveRecall
     end
 
     def remove_deck
-      deck = ActiveRecall::Deck.where(user_id: id, user_type: self.class.name).first
-      deck.destroy
+      ActiveRecall::Deck
+        .where(user_id: id, user_type: self.class.name)
+        .destroy_all
     end
   end
 end
