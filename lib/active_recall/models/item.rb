@@ -5,7 +5,6 @@ module ActiveRecall
     self.table_name = 'active_recall_items'
 
     belongs_to :deck
-    belongs_to :source, polymorphic: true
 
     scope :failed, -> { where(['box = ? and last_reviewed is not null', 0]) }
     scope :untested, -> { where(['box = ? and last_reviewed is null', 0]) }
@@ -16,6 +15,10 @@ module ActiveRecall
 
     def self.known(current_time: Time.current)
       where(['box > ? and next_review > ?', 0, current_time])
+    end
+
+    def source
+      source_type.constantize.find(source_id)
     end
 
     def right!
