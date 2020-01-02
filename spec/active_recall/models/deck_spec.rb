@@ -98,9 +98,7 @@ describe ActiveRecall::Deck do
 
     context 'before a deck has been created' do
       it 'does not raise an error' do
-        expect do
-          user.destroy
-        end.not_to raise_error(NoMethodError)
+        expect { user.destroy }.not_to raise_error
       end
     end
   end
