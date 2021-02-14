@@ -24,7 +24,7 @@ GEM
     i18n (1.7.0)
       concurrent-ruby (~> 1.0)
     minitest (5.13.0)
-    rake (10.5.0)
+    rake (12.3.3)
     rdoc (6.2.0)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
@@ -50,8 +50,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_recall!
-  bundler (>= 1.16)
-  rake (~> 10.0)
+  rake (~> 12.0)
   rdoc
   rspec (~> 3.0)
   sqlite3
@@ -60,4 +59,4 @@ RUBY VERSION
    ruby 2.5.3p105
 
 BUNDLED WITH
-   1.17.3
+   2.0.1
