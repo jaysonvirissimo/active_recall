@@ -1,0 +1,45 @@
+name: Tests 
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  unit_tests:
+    name: Unit Tests
+    if: "contains(github.event.commits[0].message, '[ci skip]') == false"
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos 
+          - ubuntu
+        ruby:
+          - 2.5
+          - 2.6
+          - 2.7
+        allow_failures:
+          - false
+        include:
+          - os: ubuntu
+            ruby: ruby-head
+            allow_failures: true
+    env:
+      BUNDLE_GEMFILE: "${{ matrix.gemfile }}"
+      ALLOW_FAILURES: "${{ matrix.allow_failures }}"
+    runs-on: ${{ matrix.os }}-latest
+    continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Test
+        run: bundle exec rake spec || $ALLOW_FAILURES
