@@ -22,11 +22,11 @@ module ActiveRecall
     end
 
     def right!
-      update!(algorithm_class.right(scoring_attributes))
+      update!(algorithm_class.right(**scoring_attributes))
     end
 
     def wrong!
-      update!(algorithm_class.wrong(scoring_attributes))
+      update!(algorithm_class.wrong(**scoring_attributes))
     end
 
     private

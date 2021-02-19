@@ -4,7 +4,7 @@ module ActiveRecall
   class LeitnerSystem
     DELAYS = [3, 7, 14, 30, 60, 120, 240].freeze
 
-    def self.right(box:, current_time: Time.current, times_right:, times_wrong:)
+    def self.right(box:, times_right:, times_wrong:, current_time: Time.current)
       new(
         box: box,
         current_time: current_time,
@@ -13,7 +13,7 @@ module ActiveRecall
       ).right
     end
 
-    def self.wrong(box:, current_time: Time.current, times_right:, times_wrong:)
+    def self.wrong(box:, times_right:, times_wrong:, current_time: Time.current)
       new(
         box: box,
         current_time: current_time,
@@ -22,7 +22,7 @@ module ActiveRecall
       ).wrong
     end
 
-    def initialize(box:, current_time: Time.current, times_right:, times_wrong:)
+    def initialize(box:, times_right:, times_wrong:, current_time: Time.current)
       @box = box
       @current_time = current_time
       @times_right = times_right
