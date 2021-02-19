@@ -11,7 +11,7 @@ shared_examples_for 'spaced repetition algorithms' do
     end
 
     describe '#right' do
-      let(:result) { described_class.new(arguments).right }
+      let(:result) { described_class.new(**arguments).right }
 
       it 'returns attributes needed to update the ActiveRecord model' do
         expect(result.keys).to include(*expected_keys)
@@ -24,7 +24,7 @@ shared_examples_for 'spaced repetition algorithms' do
     end
 
     describe '#wrong' do
-      let(:result) { described_class.new(arguments).wrong }
+      let(:result) { described_class.new(**arguments).wrong }
 
       it 'returns attributes needed to update the ActiveRecord model' do
         expect(result.keys).to include(*expected_keys)

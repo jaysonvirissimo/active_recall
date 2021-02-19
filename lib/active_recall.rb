@@ -10,7 +10,7 @@ require 'active_recall/models/deck'
 require 'active_recall/models/item'
 require 'active_recall/version'
 
-ActiveRecord::Base.send(:include, ActiveRecall::Base)
+ActiveRecord::Base.include ActiveRecall::Base
 
 module ActiveRecall
   class << self

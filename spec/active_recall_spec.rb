@@ -18,7 +18,7 @@ describe ActiveRecall do
 
     context 'by default' do
       it 'uses the Leitner system algorithm' do
-        allow(ActiveRecall::LeitnerSystem).to receive(:right).and_call_original
+        allow(ActiveRecall::LeitnerSystem).to receive(:right).and_return({})
         user.right_answer_for!(word)
         expect(ActiveRecall::LeitnerSystem).to have_received(:right)
       end
@@ -32,9 +32,7 @@ describe ActiveRecall do
       end
 
       it 'uses the explicitly specified algorithm' do
-        allow(ActiveRecall::FibonacciSequence)
-          .to receive(:right)
-          .and_call_original
+        allow(ActiveRecall::FibonacciSequence).to receive(:right).and_return({})
         allow(ActiveRecall::LeitnerSystem).to receive(:right)
         user.right_answer_for!(word)
         expect(ActiveRecall::FibonacciSequence).to have_received(:right)

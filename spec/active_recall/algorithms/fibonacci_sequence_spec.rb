@@ -6,7 +6,7 @@ describe ActiveRecall::FibonacciSequence do
   it_behaves_like 'spaced repetition algorithms'
 
   describe '.right' do
-    subject { described_class.right(arguments) }
+    subject { described_class.right(**arguments) }
 
     context 'on the first attempt' do
       let(:arguments) do
@@ -59,7 +59,7 @@ describe ActiveRecall::FibonacciSequence do
 
   describe '.wrong' do
     let(:current_time) { Time.current }
-    subject { described_class.wrong(arguments) }
+    subject { described_class.wrong(**arguments) }
 
     context 'on the first attempt' do
       let(:arguments) do
