@@ -17,9 +17,18 @@ describe ActiveRecall::DeckMethods do
       expect(user.words).to eq([])
     end
 
-    it 'should allow access of word stats' do
-      user.words << word
-      expect(word.stats).to be
+    describe '#stats' do
+      let(:stats) do
+        user.words << word
+        word.stats
+      end
+
+      it 'should allow access of word stats' do
+        expect(stats).to respond_to(:last_reviewed)
+        expect(stats).to respond_to(:next_review)
+        expect(stats).to respond_to(:times_right)
+        expect(stats).to respond_to(:times_wrong)
+      end
     end
   end
 end
