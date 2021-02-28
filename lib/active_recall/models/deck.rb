@@ -42,12 +42,14 @@ module ActiveRecall
         .destroy
     end
 
+    # OPTIMIZE: Attempt in active record, rather than array of Ruby records
     def review
       %i[untested failed expired].inject([]) do |words, s|
         words += items.send(s).order(random_order_function).map(&:source)
       end
     end
 
+    # OPTIMIZE: Use optimized #review and build only the record to be returned
     def next
       word = nil
       %i[untested failed expired].each do |category|
