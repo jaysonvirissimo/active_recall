@@ -3,10 +3,10 @@
 module ActiveRecall
   module DeckMethods
     def deck
-      d = ActiveRecall::Deck.where(user_id: id, user_type: self.class.name).first_or_create
+      d = ActiveRecall::Deck.find_or_create_by(user_id: id, user_type: self.class.name)
       d.source_class.module_eval do
         def stats
-          ActiveRecall::Item.where(source_id: id, source_type: self.class.name).first
+          ActiveRecall::Item.find_by(source_id: id, source_type: self.class.name)
         end
       end
       d
