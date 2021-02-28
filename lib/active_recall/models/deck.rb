@@ -37,8 +37,9 @@ module ActiveRecall
     end
 
     def delete(source)
-      item = ActiveRecall::Item.new(deck: self, source_id: source.id, source_type: source.class.name)
-      item.destroy
+      ActiveRecall::Item
+        .find_by(deck: self, source_id: source.id, source_type: source.class.name)
+        .destroy
     end
 
     def review

@@ -77,9 +77,15 @@ describe ActiveRecall::Deck do
   end
 
   describe '#delete' do
-    it 'should remove words from the word list (but not the model itself)' do
-      user.words.delete(word)
+    it 'should remove words from the word list (but not destroy the source)' do
       expect(user.words).not_to include(word)
+      user.words << word
+      expect(user.words).to include(word)
+
+      user.words.delete(word)
+
+      expect(user.words).not_to include(word)
+      expect(word).not_to be_destroyed
       expect(user).not_to be_destroyed
     end
   end
