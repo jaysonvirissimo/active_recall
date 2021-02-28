@@ -28,7 +28,7 @@ jobs:
         include:
           - os: ubuntu
             ruby: ruby-head
-            allow_failures: true
+            allow_failures: false
     env:
       BUNDLE_GEMFILE: "${{ matrix.gemfile }}"
       ALLOW_FAILURES: "${{ matrix.allow_failures }}"
