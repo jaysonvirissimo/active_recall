@@ -1,19 +1,19 @@
 PATH
   remote: .
   specs:
-    active_recall (1.6.1)
-      activerecord (>= 5.2.3, <= 6.1)
-      activesupport (>= 5.2.3, <= 6.1)
+    active_recall (1.6.2)
+      activerecord (>= 5.2.3, <= 6.2)
+      activesupport (>= 5.2.3, <= 6.2)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (6.1.0)
-      activesupport (= 6.1.0)
-    activerecord (6.1.0)
-      activemodel (= 6.1.0)
-      activesupport (= 6.1.0)
-    activesupport (6.1.0)
+    activemodel (6.1.3)
+      activesupport (= 6.1.3)
+    activerecord (6.1.3)
+      activemodel (= 6.1.3)
+      activesupport (= 6.1.3)
+    activesupport (6.1.3)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -49,9 +49,9 @@ PLATFORMS
 
 DEPENDENCIES
   active_recall!
-  rake (~> 12.0)
+  rake (>= 12.0)
   rdoc
-  rspec (~> 3.0)
+  rspec (>= 3.0)
   sqlite3
 
 BUNDLED WITH
