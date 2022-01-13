@@ -2,19 +2,19 @@
 
 module ActiveRecall
   class Item < ActiveRecord::Base
-    self.table_name = 'active_recall_items'
+    self.table_name = "active_recall_items"
 
     belongs_to :deck
 
-    scope :failed, -> { where(['box = ? and last_reviewed is not null', 0]) }
-    scope :untested, -> { where(['box = ? and last_reviewed is null', 0]) }
+    scope :failed, -> { where(["box = ? and last_reviewed is not null", 0]) }
+    scope :untested, -> { where(["box = ? and last_reviewed is null", 0]) }
 
     def self.expired(current_time: Time.current)
-      where(['box > ? and next_review <= ?', 0, current_time])
+      where(["box > ? and next_review <= ?", 0, current_time])
     end
 
     def self.known(current_time: Time.current)
-      where(['box > ? and next_review > ?', 0, current_time])
+      where(["box > ? and next_review > ?", 0, current_time])
     end
 
     def source

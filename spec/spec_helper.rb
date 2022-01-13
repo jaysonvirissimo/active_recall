@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'active_record'
-require 'sqlite3'
-require 'active_recall'
+require "active_record"
+require "sqlite3"
+require "active_recall"
 
 ActiveRecord::Base.establish_connection(
-  adapter: 'sqlite3',
-  database: ':memory:'
+  adapter: "sqlite3",
+  database: ":memory:"
 )
 
 ActiveRecord::Migration.verbose = false
@@ -20,13 +20,13 @@ ActiveRecord::Schema.define do
   add_index :active_recall_decks, %i[user_id user_type]
 
   create_table :active_recall_items do |t|
-    t.references  :deck
-    t.references  :source, polymorphic: true
-    t.integer     :box, default: 0
-    t.integer     :times_right, default: 0
-    t.integer     :times_wrong, default: 0
-    t.timestamp   :last_reviewed
-    t.timestamp   :next_review
+    t.references :deck
+    t.references :source, polymorphic: true
+    t.integer :box, default: 0
+    t.integer :times_right, default: 0
+    t.integer :times_wrong, default: 0
+    t.timestamp :last_reviewed
+    t.timestamp :next_review
     t.timestamps
   end
   add_index :active_recall_items, %i[source_id source_type]

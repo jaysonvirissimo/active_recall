@@ -1,36 +1,36 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'active_support/testing/time_helpers'
+require "spec_helper"
+require "active_support/testing/time_helpers"
 
 describe ActiveRecall::Item do
   include ActiveSupport::Testing::TimeHelpers
 
-  let(:user) { User.create!(name: 'Robert') }
+  let(:user) { User.create!(name: "Robert") }
   let(:word) do
     Word.create!(
-      kanji: '日本語',
-      kana: 'にほんご',
-      translation: 'Japanese language'
+      kanji: "日本語",
+      kana: "にほんご",
+      translation: "Japanese language"
     )
   end
 
   before(:each) { user.words << word }
 
-  describe '#words' do
-    it 'should present a list of all words' do
+  describe "#words" do
+    it "should present a list of all words" do
       expect(user.words).to eq([word])
       expect(user.words.count).to eq(1)
     end
 
-    describe '.untested' do
-      it 'should start off in the untested stack' do
+    describe ".untested" do
+      it "should start off in the untested stack" do
         expect(user.words.untested).to eq([word])
       end
     end
 
-    describe '.known' do
-      it 'correct answer should move it up one stack' do
+    describe ".known" do
+      it "correct answer should move it up one stack" do
         user.right_answer_for!(word)
         expect(user.words.untested).to eq([])
         expect(user.words.box(1)).to eq([word])
@@ -38,8 +38,8 @@ describe ActiveRecall::Item do
       end
     end
 
-    describe '.failed' do
-      it 'incorrect answer should move it to the failed stack' do
+    describe ".failed" do
+      it "incorrect answer should move it to the failed stack" do
         user.wrong_answer_for!(word)
         expect(user.words.untested).to eq([])
         expect(user.words.failed).to eq([word])
@@ -48,13 +48,13 @@ describe ActiveRecall::Item do
     end
   end
 
-  describe '.stats' do
-    describe '.next_review' do
-      it 'when untested, next study time should be nil' do
+  describe ".stats" do
+    describe ".next_review" do
+      it "when untested, next study time should be nil" do
         expect(word.stats.next_review).not_to be
       end
 
-      it 'when correct, next study time should gradually increase' do
+      it "when correct, next study time should gradually increase" do
         user.right_answer_for!(word)
         stats = word.stats
         expect(stats.next_review).to eq(stats.last_reviewed + 3.days)
@@ -80,7 +80,7 @@ describe ActiveRecall::Item do
         expect(stats.next_review).to eq(stats.last_reviewed + 240.days)
       end
 
-      it 'words should expire and move from known to expired' do
+      it "words should expire and move from known to expired" do
         future_time = Time.current + 4.days
 
         user.right_answer_for!(word)
