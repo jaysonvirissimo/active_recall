@@ -38,5 +38,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "sqlite3"
   spec.add_runtime_dependency "activerecord", ">= 5.2.3", "<= 7.1"
   spec.add_runtime_dependency "activesupport", ">= 5.2.3", "<= 7.1"
-  spec.required_ruby_version = ">= 2.7.0"
+  spec.required_ruby_version = ">= 2.6"
 end
