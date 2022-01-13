@@ -4,9 +4,9 @@ module ActiveRecall
   class Deck < ActiveRecord::Base
     include Enumerable
     include ActiveRecall::Base
-    self.table_name = 'active_recall_decks'
+    self.table_name = "active_recall_decks"
     belongs_to :user, polymorphic: true
-    has_many :items, class_name: 'ActiveRecall::Item', dependent: :destroy
+    has_many :items, class_name: "ActiveRecall::Item", dependent: :destroy
 
     def each
       _items.each do |item|
@@ -27,7 +27,7 @@ module ActiveRecall
     end
 
     def <<(source)
-      raise ArgumentError, 'Word already in the stack' if include?(source)
+      raise ArgumentError, "Word already in the stack" if include?(source)
 
       items << ActiveRecall::Item.new(deck: self, source_id: source.id, source_type: source.class.name)
     end
@@ -51,7 +51,7 @@ module ActiveRecall
     end
 
     def last
-      items.order('created_at desc').limit(1).first.try(:source)
+      items.order("created_at desc").limit(1).first.try(:source)
     end
 
     def untested
@@ -89,11 +89,11 @@ module ActiveRecall
     end
 
     def random_order_function
-      Arel.sql(mysql? ? 'RAND()' : 'random()')
+      Arel.sql(mysql? ? "RAND()" : "random()")
     end
 
     def mysql?
-      source_class.connection.adapter_name == 'Mysql2'
+      source_class.connection.adapter_name == "Mysql2"
     end
   end
 end
