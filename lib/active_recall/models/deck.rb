@@ -43,7 +43,7 @@ module ActiveRecall
     end
 
     def review
-      _review.map(&:source)
+      source_class.where(id: _review.select(:source_id))
     end
 
     def next
@@ -55,19 +55,19 @@ module ActiveRecall
     end
 
     def untested
-      source_class.find(items.untested.pluck(:source_id))
+      source_class.where(id: items.untested.select(:source_id))
     end
 
     def failed
-      source_class.find(items.failed.pluck(:source_id))
+      source_class.where(id: items.failed.select(:source_id))
     end
 
     def known
-      source_class.find(items.known.pluck(:source_id))
+      source_class.where(id: items.known.select(:source_id))
     end
 
     def expired
-      source_class.find(items.expired.pluck(:source_id))
+      source_class.where(id: items.expired.select(:source_id))
     end
 
     def box(number)
