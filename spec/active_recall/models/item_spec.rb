@@ -23,27 +23,56 @@ describe ActiveRecall::Item do
       expect(user.words.count).to eq(1)
     end
 
+    describe ".expired" do
+      specify do
+        expect(user.words.expired).to be_a_kind_of(ActiveRecord::Relation)
+      end
+    end
+
     describe ".untested" do
+      subject { user.words.untested }
+
       it "should start off in the untested stack" do
-        expect(user.words.untested).to eq([word])
+        expect(subject).to eq([word])
+      end
+
+      it "should return a chainable relation" do
+        count = subject.where(translation: word.translation).count
+        expect(count).to be_positive
       end
     end
 
     describe ".known" do
+      subject { user.words.known }
+
       it "correct answer should move it up one stack" do
         user.right_answer_for!(word)
         expect(user.words.untested).to eq([])
         expect(user.words.box(1)).to eq([word])
-        expect(user.words.known).to eq([word])
+        expect(subject).to eq([word])
+      end
+
+      it "should return a chainable relation" do
+        user.right_answer_for!(word)
+        count = subject.where(kanji: "no such kanji").count
+        expect(count).to be_zero
       end
     end
 
     describe ".failed" do
+      subject { user.words.failed }
+
       it "incorrect answer should move it to the failed stack" do
         user.wrong_answer_for!(word)
         expect(user.words.untested).to eq([])
-        expect(user.words.failed).to eq([word])
+        expect(subject).to eq([word])
         expect(word.stats.times_wrong).to eq(1)
+      end
+
+      it "should return a chainable relation" do
+        user.wrong_answer_for!(word)
+        count = subject.where(kana: word.kana).count
+        expect(count).to be_positive
       end
     end
   end
