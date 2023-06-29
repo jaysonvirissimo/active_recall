@@ -1,4 +1,4 @@
-name: Tests 
+name: Tests
 
 on:
   pull_request:
@@ -16,11 +16,12 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - macos 
+          - macos
           - ubuntu
         ruby:
           - 2.7
           - 3.0
+          - 3.1
         allow_failures:
           - false
         include:
