@@ -22,45 +22,94 @@ describe ActiveRecall::Deck do
   describe ".review" do
     subject { user.words.review }
 
-    it "should return an collection of words to review" do
-      user.words << word
-      user.words << other_word
-      expect(user.words.known.count).to be_zero
-      words = (user.words.untested + user.words.failed + user.words.expired).sort
-      expect(words).to eq(subject.sort)
-    end
+    context "when configured with the FibonacciSequence" do
+      let(:previous_algorithm) { ActiveRecall.configuration.algorithm_class }
 
-    it "allows marking words right/wrong" do
-      user.words << word
-      user.words << other_word
-      expect(user.words.count).to eq(2)
-      expect(user.words.review.count).to eq(2)
-      user.words.review.each_with_index do |word, index|
-        index.even? ? user.right_answer_for!(word) : user.wrong_answer_for!(word)
+      before do
+        previous_algorithm
+        ActiveRecall.configure do |config|
+          config.algorithm_class = ActiveRecall::FibonacciSequence
+        end
       end
-      expect(subject.count).to eq(1)
+
+      after do
+        ActiveRecall.configure { |config| config.algorithm_class = previous_algorithm }
+      end
+
+      context "when a word is marked right a few times" do
+        before do
+          user.words << word
+          3.times { user.right_answer_for!(word) }
+        end
+
+        it "doesn't include the card in review (because it is known)" do
+          expect(user.words.review).not_to include(word)
+        end
+
+        context "but then is marked wrong" do
+          before { user.wrong_answer_for!(word) }
+
+          it "should include that word in review" do
+            expect(user.words.review).to include(word)
+          end
+        end
+      end
     end
 
-    it "should allow you to get one word only" do
-      user.words << word
-      user.words << other_word
-      expect(user.words.known.count).to be_zero
-      word = user.words.next
-      expect(user.words.untested).to include(word)
-      user.right_answer_for!(word)
-      word = user.words.next
-      expect(user.words.untested).to include(word)
-      user.right_answer_for!(word)
-      expect(user.words.next).to_not be
-    end
+    context "when configured with LeitnerSystem" do
+      let(:previous_algorithm) { ActiveRecall.configuration.algorithm_class }
 
-    it "returns a chainable relation" do
-      user.words << word
-      user.words << other_word
-      user.words.each { |word| user.wrong_answer_for!(word) }
-      relation = subject.where(kanji: word.kanji)
-      expect(relation).to include(word)
-      expect(relation).not_to include(other_word)
+      before do
+        previous_algorithm
+        ActiveRecall.configure do |config|
+          config.algorithm_class = ActiveRecall::LeitnerSystem
+        end
+      end
+
+      after do
+        ActiveRecall.configure { |config| config.algorithm_class = previous_algorithm }
+      end
+
+      it "should return an collection of words to review" do
+        user.words << word
+        user.words << other_word
+        expect(user.words.known.count).to be_zero
+        words = (user.words.untested + user.words.failed + user.words.expired).sort
+        expect(words).to eq(subject.sort)
+      end
+
+      it "allows marking words right/wrong" do
+        user.words << word
+        user.words << other_word
+        expect(user.words.count).to eq(2)
+        expect(user.words.review.count).to eq(2)
+        user.words.review.each_with_index do |word, index|
+          index.even? ? user.right_answer_for!(word) : user.wrong_answer_for!(word)
+        end
+        expect(subject.count).to eq(1)
+      end
+
+      it "should allow you to get one word only" do
+        user.words << word
+        user.words << other_word
+        expect(user.words.known.count).to be_zero
+        word = user.words.next
+        expect(user.words.untested).to include(word)
+        user.right_answer_for!(word)
+        word = user.words.next
+        expect(user.words.untested).to include(word)
+        user.right_answer_for!(word)
+        expect(user.words.next).to_not be
+      end
+
+      it "returns a chainable relation" do
+        user.words << word
+        user.words << other_word
+        user.words.each { |word| user.wrong_answer_for!(word) }
+        relation = subject.where(kanji: word.kanji)
+        expect(relation).to include(word)
+        expect(relation).not_to include(other_word)
+      end
     end
   end
 
