@@ -39,7 +39,7 @@ module ActiveRecall
 
     def wrong
       {
-        box: [0, box - 1].max,
+        box: 0,
         last_reviewed: current_time,
         next_review: nil,
         times_right: times_right,
