@@ -17,9 +17,13 @@ module ActiveRecall
     end
 
     def <<(source)
-      raise ArgumentError, "Word already in the stack" if include?(source)
+      attributes = {deck: self, source_id: source.id, source_type: source.class.name}
 
-      items << ActiveRecall::Item.new(deck: self, source_id: source.id, source_type: source.class.name)
+      if ActiveRecall::Item.exists?(attributes)
+        raise ArgumentError, "Word already in the stack"
+      end
+
+      items << ActiveRecall::Item.new(attributes)
     end
 
     def self.add_deck(user)
