@@ -9,15 +9,11 @@ module ActiveRecall
     has_many :items, class_name: "ActiveRecall::Item", dependent: :destroy
 
     def each
-      _items.each { |item| yield item }
+      _items.find_each { |item| yield item }
     end
 
     def ==(other)
       _items == other
-    end
-
-    def _items
-      source_class.find(items.pluck(:source_id))
     end
 
     def <<(source)
@@ -65,7 +61,7 @@ module ActiveRecall
     end
 
     def box(number)
-      source_class.find(items.where(box: number).pluck(:source_id))
+      source_class.where(id: items.where(box: number).select(:source_id))
     end
 
     def source_class
@@ -73,6 +69,10 @@ module ActiveRecall
     end
 
     private
+
+    def _items
+      source_class.where(id: items.select(:source_id))
+    end
 
     def _review
       items
