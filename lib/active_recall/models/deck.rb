@@ -9,13 +9,7 @@ module ActiveRecall
     has_many :items, class_name: "ActiveRecall::Item", dependent: :destroy
 
     def each
-      _items.each do |item|
-        if block_given?
-          yield item
-        else
-          yield item
-        end
-      end
+      _items.each { |item| yield item }
     end
 
     def ==(other)
