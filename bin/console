@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "active_recall"
+
+# You can add here some code to start an interactive console or debug session.
+# `binding.pry` from the Pry gem is often used for this purpose.
+require "irb"
+IRB.start(__FILE__)
