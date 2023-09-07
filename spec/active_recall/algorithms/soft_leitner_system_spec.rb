@@ -19,20 +19,27 @@ describe ActiveRecall::SoftLeitnerSystem do
 
     subject { described_class.right(**params) }
 
-    it "increments the box by 1" do
-      expect(subject[:box]).to eq(params[:box] + 1)
+    it "increments the box" do
+      expect(subject[:box]).to eq(3)
     end
 
-    it "increments times_right by 1" do
-      expect(subject[:times_right]).to eq(params[:times_right] + 1)
+    it "increments times right" do
+      expect(subject[:times_right]).to eq(4)
     end
 
-    it "does not change times_wrong" do
-      expect(subject[:times_wrong]).to eq(params[:times_wrong])
+    it "leaves times wrong alone" do
+      expect(subject[:times_wrong]).to eq(1)
     end
 
-    it "sets next_review based on delays" do
-      expect(subject[:next_review]).to eq(current_time + described_class::DELAYS[params[:box]].days)
+    it "sets next review based on the incremented box" do
+      expect(subject[:next_review]).to eq(current_time + described_class::DELAYS[2].days)
+    end
+
+    context "when starting from the maximum box" do
+      it "stays in largest box" do
+        params[:box] = 7
+        expect(described_class.right(**params)[:box]).to eq(7)
+      end
     end
   end
 
@@ -48,16 +55,27 @@ describe ActiveRecall::SoftLeitnerSystem do
 
     subject { described_class.wrong(**params) }
 
-    it "decrements the box by 1 but not below 0" do
-      expect(subject[:box]).to eq([params[:box] - 1, 0].max)
+    it "decrements the box" do
+      expect(subject[:box]).to eq(1)
     end
 
-    it "increments times_wrong by 1" do
-      expect(subject[:times_wrong]).to eq(params[:times_wrong] + 1)
+    it "increments times wrong" do
+      expect(subject[:times_wrong]).to eq(2)
     end
 
-    it "does not change times_right" do
-      expect(subject[:times_right]).to eq(params[:times_right])
+    it "leaves times right alone" do
+      expect(subject[:times_right]).to eq(3)
+    end
+
+    it "sets the next review based on the decremented box" do
+      expect(subject[:next_review]).to eq(current_time + described_class::DELAYS[0].days)
+    end
+
+    context "when already in box zero" do
+      it "stays in box zero" do
+        params[:box] = 0
+        expect(described_class.wrong(**params)[:box]).to be_zero
+      end
     end
   end
 end
