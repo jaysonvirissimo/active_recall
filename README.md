@@ -35,6 +35,7 @@ ActiveRecall.configure do |config|
   config.algorithm_class = ActiveRecall::FibonacciSequence
 end
 ```
+Algorithms include `FibonacciSequence`, `LeitnerSystem`, and `SoftLeitnerSystem`.
 For Rails applications, try doing this from within an [initializer file](https://guides.rubyonrails.org/configuring.html#using-initializer-files).
 
 Assume you have an application allowing your users to study words in a foreign language. Using the `has_deck` method you can set up a deck of flashcards that the user will study:
