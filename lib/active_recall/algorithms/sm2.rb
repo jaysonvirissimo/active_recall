@@ -26,6 +26,7 @@ module ActiveRecall
     end
 
     def score
+      raise "Grade must be between 0-5!" unless GRADES.include?(@grade)
       update_easiness_factor
       update_repetition_and_interval
 
@@ -40,6 +41,15 @@ module ActiveRecall
     end
 
     private
+
+    GRADES = [
+      5, # Perfect response. The learner recalls the information without hesitation.
+      4, # Correct response after a hesitation. The learner recalls the information but with some difficulty.
+      3, # Correct response recalled with serious difficulty. The learner struggles but eventually recalls the information.
+      2, # Incorrect response, but the learner was very close to the correct answer. This might involve recalling some of the information correctly but not all of it.
+      1, # Incorrect response, but the learner feels they should have remembered it. This is typically used when the learner has a sense of familiarity with the material but fails to recall it correctly.
+      0 # Complete blackout. The learner does not recall the information at all.
+    ].freeze
 
     def update_easiness_factor
       @easiness_factor += (0.1 - (5 - @grade) * (0.08 + (5 - @grade) * 0.02))

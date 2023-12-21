@@ -58,5 +58,13 @@ describe ActiveRecall::SM2 do
         expect(subject[:next_review]).to eq(current_time + 1.day)
       end
     end
+
+    context "with an impossible grade" do
+      before { params[:grade] = 10 }
+
+      specify do
+        expect { subject }.to raise_error
+      end
+    end
   end
 end
