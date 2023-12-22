@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
-shared_examples_for "spaced repetition algorithms" do
+shared_examples_for "binary spaced repetition algorithms" do
   it { expect(described_class).to respond_to(:right) }
   it { expect(described_class).to respond_to(:wrong) }
+
+  context ".type" do
+    it { expect(described_class.type).to eq(:binary) }
+  end
 
   context "when given API-respecting arguments" do
     let(:arguments) { {box: 0, times_right: 0, times_wrong: 0} }

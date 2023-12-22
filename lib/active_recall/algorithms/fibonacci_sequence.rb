@@ -2,6 +2,10 @@
 
 module ActiveRecall
   class FibonacciSequence
+    def self.required_attributes
+      REQUIRED_ATTRIBUTES
+    end
+
     def self.right(box:, times_right:, times_wrong:, current_time: Time.current)
       new(
         box: box,
@@ -9,6 +13,10 @@ module ActiveRecall
         times_right: times_right,
         times_wrong: times_wrong
       ).right
+    end
+
+    def self.type
+      :binary
     end
 
     def self.wrong(box:, times_right:, times_wrong:, current_time: Time.current)
@@ -51,6 +59,7 @@ module ActiveRecall
 
     attr_reader :box, :current_time, :times_right, :times_wrong
 
+    REQUIRED_ATTRIBUTES = [:box, :times_right, :times_wrong].freeze
     SEQUENCE = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765].freeze
 
     def fibonacci_number_at(index)

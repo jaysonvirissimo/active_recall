@@ -4,6 +4,10 @@ module ActiveRecall
   class SM2
     MIN_EASINESS_FACTOR = 1.3
 
+    def self.required_attributes
+      REQUIRED_ATTRIBUTES
+    end
+
     def self.score(box:, easiness_factor:, times_right:, times_wrong:, grade:, current_time: Time.current)
       new(
         box: box,
@@ -49,6 +53,13 @@ module ActiveRecall
       2, # Incorrect response, but the learner was very close to the correct answer. This might involve recalling some of the information correctly but not all of it.
       1, # Incorrect response, but the learner feels they should have remembered it. This is typically used when the learner has a sense of familiarity with the material but fails to recall it correctly.
       0 # Complete blackout. The learner does not recall the information at all.
+    ].freeze
+    REQUIRED_ATTRIBUTES = [
+      :box,
+      :easiness_factor,
+      :grade,
+      :times_right,
+      :times_wrong
     ].freeze
 
     def update_easiness_factor

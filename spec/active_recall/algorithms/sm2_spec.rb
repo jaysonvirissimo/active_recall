@@ -5,6 +5,18 @@ require "spec_helper"
 describe ActiveRecall::SM2 do
   let(:current_time) { Time.current }
 
+  describe ".required_attributes" do
+    specify do
+      expect(described_class.required_attributes).to contain_exactly(
+        :box,
+        :easiness_factor,
+        :grade,
+        :times_right,
+        :times_wrong
+      )
+    end
+  end
+
   describe ".score" do
     let(:params) do
       {

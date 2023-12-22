@@ -17,6 +17,12 @@ module ActiveRecall
       where(["box > ? and next_review > ?", 0, current_time])
     end
 
+    def score!(grade)
+      update!(
+        algorithm_class.score(**scoring_attributes.merge(grade: grade))
+      ).score
+    end
+
     def source
       source_type.constantize.find(source_id)
     end
@@ -36,7 +42,11 @@ module ActiveRecall
     end
 
     def scoring_attributes
-      attributes.symbolize_keys.slice(:box, :times_right, :times_wrong)
+      attributes
+        .symbolize_keys
+        .slice(*algorithm_class.required_attributes)
     end
+
+    class IncompatibleAlgorithmError < StandardError; end
   end
 end

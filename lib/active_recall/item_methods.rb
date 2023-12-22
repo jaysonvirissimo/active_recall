@@ -9,5 +9,9 @@ module ActiveRecall
     def wrong_answer_for!(item)
       deck.items.find_by(source_id: item.id).wrong!
     end
+
+    def score!(grade, item)
+      deck.items.find_by(source_id: item.id).score!(grade)
+    end
   end
 end
