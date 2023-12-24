@@ -19,6 +19,10 @@ module ActiveRecall
       ).score
     end
 
+    def self.type
+      :gradable
+    end
+
     def initialize(box:, easiness_factor:, times_right:, times_wrong:, grade:, current_time: Time.current)
       @box = box
       @easiness_factor = easiness_factor || 2.5

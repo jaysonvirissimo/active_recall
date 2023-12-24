@@ -30,4 +30,6 @@ module ActiveRecall
   def self.reset
     @configuration = Configuration.new
   end
+
+  class IncompatibleAlgorithmError < StandardError; end
 end

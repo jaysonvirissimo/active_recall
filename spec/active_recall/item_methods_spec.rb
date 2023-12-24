@@ -11,25 +11,40 @@ describe ActiveRecall::ItemMethods do
   end
 
   describe "#right_answer_for!" do
-    it "calls right! on the corresponding item" do
-      expect_any_instance_of(ActiveRecall::Item).to receive(:right!).and_call_original
-      user.right_answer_for!(item)
+    it "errors when tried without a binary algorithm" do
+      ActiveRecall.configure do |config|
+        @previous_algorithm_class = config.algorithm_class
+        config.algorithm_class = ActiveRecall::SM2
+      end
+
+      expect { user.right_answer_for!(item) }.to raise_error(ActiveRecall::IncompatibleAlgorithmError)
+
+      ActiveRecall.configure do |config|
+        config.algorithm_class = @previous_algorithm_class
+      end
     end
   end
 
   describe "#wrong_answer_for!" do
-    it "calls wrong! on the corresponding item" do
-      expect_any_instance_of(ActiveRecall::Item).to receive(:wrong!).and_call_original
-      user.wrong_answer_for!(item)
+    it "errors when tried without a binary algorithm" do
+      ActiveRecall.configure do |config|
+        @previous_algorithm_class = config.algorithm_class
+        config.algorithm_class = ActiveRecall::SM2
+      end
+
+      expect { user.wrong_answer_for!(item) }.to raise_error(ActiveRecall::IncompatibleAlgorithmError)
+
+      ActiveRecall.configure do |config|
+        config.algorithm_class = @previous_algorithm_class
+      end
     end
   end
 
-  xdescribe "#score!" do
+  describe "#score!" do
     let(:grade) { 4 }
 
-    it "calls score! on the corresponding item with the correct grade" do
-      expect_any_instance_of(ActiveRecall::Item).to receive(:score!).with(grade).and_call_original
-      user.score!(grade, item)
+    it "errors when tried without a binary algorithm" do
+      expect { user.score!(grade, item) }.to raise_error(ActiveRecall::IncompatibleAlgorithmError)
     end
   end
 end

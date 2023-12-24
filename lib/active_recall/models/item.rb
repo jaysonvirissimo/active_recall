@@ -18,9 +18,13 @@ module ActiveRecall
     end
 
     def score!(grade)
-      update!(
-        algorithm_class.score(**scoring_attributes.merge(grade: grade))
-      ).score
+      if algorithm_class.type == :gradable
+        update!(
+          algorithm_class.score(**scoring_attributes.merge(grade: grade))
+        ).score
+      else
+        raise IncompatibleAlgorithmError, "#{algorithm_class.name} is a not an gradable algorithm, so is not compatible with the #score! method"
+      end
     end
 
     def source
@@ -28,11 +32,19 @@ module ActiveRecall
     end
 
     def right!
-      update!(algorithm_class.right(**scoring_attributes))
+      if algorithm_class.type == :binary
+        update!(algorithm_class.right(**scoring_attributes))
+      else
+        raise IncompatibleAlgorithmError, "#{algorithm_class.name} is not a binary algorithm, so is not compatible with the #right! method"
+      end
     end
 
     def wrong!
-      update!(algorithm_class.wrong(**scoring_attributes))
+      if algorithm_class.type == :binary
+        update!(algorithm_class.wrong(**scoring_attributes))
+      else
+        raise IncompatibleAlgorithmError, "#{algorithm_class.name} is not a binary algorithm, so is not compatible with the #wrong! method"
+      end
     end
 
     private
@@ -46,7 +58,5 @@ module ActiveRecall
         .symbolize_keys
         .slice(*algorithm_class.required_attributes)
     end
-
-    class IncompatibleAlgorithmError < StandardError; end
   end
 end

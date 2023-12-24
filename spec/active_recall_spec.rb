@@ -27,7 +27,14 @@ describe ActiveRecall do
     context "when overriding the default" do
       before do
         ActiveRecall.configure do |config|
+          @previous_algorithm_class = config.algorithm_class
           config.algorithm_class = ActiveRecall::FibonacciSequence
+        end
+      end
+
+      after do
+        ActiveRecall.configure do |config|
+          config.algorithm_class = @previous_algorithm_class
         end
       end
 
