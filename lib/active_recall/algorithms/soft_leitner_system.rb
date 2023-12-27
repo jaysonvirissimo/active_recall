@@ -2,7 +2,9 @@
 
 module ActiveRecall
   class SoftLeitnerSystem
-    DELAYS = [3, 7, 14, 30, 60, 120, 240].freeze
+    def self.required_attributes
+      REQUIRED_ATTRIBUTES
+    end
 
     def self.right(box:, times_right:, times_wrong:, current_time: Time.current)
       new(
@@ -11,6 +13,10 @@ module ActiveRecall
         times_right: times_right,
         times_wrong: times_wrong
       ).right
+    end
+
+    def self.type
+      :binary
     end
 
     def self.wrong(box:, times_right:, times_wrong:, current_time: Time.current)
@@ -54,6 +60,9 @@ module ActiveRecall
     end
 
     private
+
+    DELAYS = [3, 7, 14, 30, 60, 120, 240].freeze
+    REQUIRED_ATTRIBUTES = [:box, :times_right, :times_wrong].freeze
 
     attr_accessor :box
     attr_reader :current_time, :times_right, :times_wrong

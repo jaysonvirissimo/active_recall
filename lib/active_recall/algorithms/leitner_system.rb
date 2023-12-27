@@ -2,7 +2,9 @@
 
 module ActiveRecall
   class LeitnerSystem
-    DELAYS = [3, 7, 14, 30, 60, 120, 240].freeze
+    def self.required_attributes
+      REQUIRED_ATTRIBUTES
+    end
 
     def self.right(box:, times_right:, times_wrong:, current_time: Time.current)
       new(
@@ -11,6 +13,10 @@ module ActiveRecall
         times_right: times_right,
         times_wrong: times_wrong
       ).right
+    end
+
+    def self.type
+      :binary
     end
 
     def self.wrong(box:, times_right:, times_wrong:, current_time: Time.current)
@@ -52,6 +58,9 @@ module ActiveRecall
     private
 
     attr_reader :box, :current_time, :times_right, :times_wrong
+
+    DELAYS = [3, 7, 14, 30, 60, 120, 240].freeze
+    REQUIRED_ATTRIBUTES = [:box, :times_right, :times_wrong].freeze
 
     def next_review
       (current_time + DELAYS[[DELAYS.count, box + 1].min - 1].days)

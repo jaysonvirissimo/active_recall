@@ -35,7 +35,7 @@ ActiveRecall.configure do |config|
   config.algorithm_class = ActiveRecall::FibonacciSequence
 end
 ```
-Algorithms include `FibonacciSequence`, `LeitnerSystem`, and `SoftLeitnerSystem`.
+Algorithms include `FibonacciSequence`, `LeitnerSystem`, `SoftLeitnerSystem`, and `SM2` (see [here](https://en.wikipedia.org/wiki/SuperMemo#Description_of_SM-2_algorithm)).
 For Rails applications, try doing this from within an [initializer file](https://guides.rubyonrails.org/configuring.html#using-initializer-files).
 
 Assume you have an application allowing your users to study words in a foreign language. Using the `has_deck` method you can set up a deck of flashcards that the user will study:
@@ -59,7 +59,7 @@ You can add words and record attempts to guess the word as right or wrong. Vario
 user.words << word
 user.words.untested #=> [word]
 
-# Guessing a word correctly
+# Guessing a word correctly (when using a binary algorithm)
 user.right_answer_for!(word)
 user.words.known #=> [word]
 
@@ -91,6 +91,16 @@ user.words.expired #=> [word]
 user.right_answer_for!(word)
 # One month later...
 user.words.expired #=> [word]
+```
+
+When using a gradable algorithm (rather than binary) such as the SM2 algorithm, you will need to supply your own grade along with the item:
+```ruby
+grade = 3
+user.score!(grade, word)
+
+# Using the binary-only methods will raise an error
+user.right_answer_for!(word)
+=> ActiveRecall::IncompatibleAlgorithmError
 ```
 
 Reviewing

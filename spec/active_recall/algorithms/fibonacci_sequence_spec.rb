@@ -3,7 +3,17 @@
 require "spec_helper"
 
 describe ActiveRecall::FibonacciSequence do
-  it_behaves_like "spaced repetition algorithms"
+  it_behaves_like "binary spaced repetition algorithms"
+
+  describe ".required_attributes" do
+    specify do
+      expect(described_class.required_attributes).to contain_exactly(
+        :box,
+        :times_right,
+        :times_wrong
+      )
+    end
+  end
 
   describe ".right" do
     subject { described_class.right(**arguments) }

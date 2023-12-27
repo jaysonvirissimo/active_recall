@@ -20,6 +20,7 @@ class ActiveRecallGenerator < Rails::Generators::Base
   def create_migration_files
     create_migration_file_if_not_exist "create_active_recall_tables"
     create_migration_file_if_not_exist "add_active_recall_item_answer_counts"
+    create_migration_file_if_not_exist "add_active_recall_item_easiness_factor"
     create_migration_file_if_not_exist "migrate_okubo_to_active_recall" if options["migrate_data"]
   end
 

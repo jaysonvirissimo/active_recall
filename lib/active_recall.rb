@@ -6,6 +6,7 @@ require "active_recall/item_methods"
 require "active_recall/algorithms/fibonacci_sequence"
 require "active_recall/algorithms/leitner_system"
 require "active_recall/algorithms/soft_leitner_system"
+require "active_recall/algorithms/sm2"
 require "active_recall/configuration"
 require "active_recall/models/deck"
 require "active_recall/models/item"
@@ -29,4 +30,6 @@ module ActiveRecall
   def self.reset
     @configuration = Configuration.new
   end
+
+  class IncompatibleAlgorithmError < StandardError; end
 end
