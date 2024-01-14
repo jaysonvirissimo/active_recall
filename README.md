@@ -2,7 +2,7 @@
 
 **ActiveRecall** is a spaced-repetition system that allows you to treat arbitrary [ActiveRecord](https://github.com/rails/rails/tree/master/activerecord) models as if they were flashcards to be learned and reviewed.
 It it based on, and is intended to be backwards compatible with, the [okubo](https://github.com/rgravina/okubo) gem.
-The primary differentiating features are that it lets the user specify the scheduling algorithm and is fully compatible with Rails 6+ and Ruby 3+.
+The primary differentiating features are that it lets the user specify the scheduling algorithm and is fully compatible with (and requires) Rails 6+ and Ruby 3+.
 
 ## Installation
 
