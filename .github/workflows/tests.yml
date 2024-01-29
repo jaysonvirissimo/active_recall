@@ -25,10 +25,6 @@ jobs:
           - 3.3
         allow_failures:
           - false
-        include:
-          - os: ubuntu
-            ruby: ruby-head
-            allow_failures: true
     env:
       BUNDLE_GEMFILE: "${{ matrix.gemfile }}"
       ALLOW_FAILURES: "${{ matrix.allow_failures }}"
