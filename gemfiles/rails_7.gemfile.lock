@@ -1,5 +1,5 @@
 PATH
-  remote: .
+  remote: ..
   specs:
     active_recall (2.0.1)
       activerecord (>= 6.0, <= 7.2)
@@ -89,11 +89,11 @@ GEM
     base64 (0.2.0)
     bigdecimal (3.1.6)
     builder (3.2.4)
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
     crass (1.0.6)
     date (3.3.4)
-    diff-lcs (1.3)
+    diff-lcs (1.5.0)
     drb (2.2.0)
       ruby2_keywords
     erubi (1.12.0)
@@ -115,8 +115,7 @@ GEM
       net-smtp
     marcel (1.0.2)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.5)
-    minitest (5.18.1)
+    minitest (5.21.2)
     mutex_m (0.2.0)
     net-imap (0.4.9.1)
       date
@@ -128,11 +127,10 @@ GEM
     net-smtp (0.4.0.1)
       net-protocol
     nio4r (2.7.0)
-    nokogiri (1.16.0)
-      mini_portile2 (~> 2.8.2)
+    nokogiri (1.16.0-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.16.0-x86_64-linux)
-      racc (~> 1.4)
+    psych (5.1.2)
+      stringio
     racc (1.7.3)
     rack (3.0.8)
     rack-session (2.0.0)
@@ -171,25 +169,27 @@ GEM
       rake (>= 12.2)
       thor (~> 1.0, >= 1.2.2)
       zeitwerk (~> 2.6)
-    rake (12.3.3)
-    rdoc (6.2.0)
+    rake (13.1.0)
+    rdoc (6.6.2)
+      psych (>= 4.0.0)
     reline (0.4.2)
       io-console (~> 0.5)
-    rspec (3.8.0)
-      rspec-core (~> 3.8.0)
-      rspec-expectations (~> 3.8.0)
-      rspec-mocks (~> 3.8.0)
-    rspec-core (3.8.2)
-      rspec-support (~> 3.8.0)
-    rspec-expectations (3.8.4)
+    rspec (3.12.0)
+      rspec-core (~> 3.12.0)
+      rspec-expectations (~> 3.12.0)
+      rspec-mocks (~> 3.12.0)
+    rspec-core (3.12.2)
+      rspec-support (~> 3.12.0)
+    rspec-expectations (3.12.3)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.8.0)
-    rspec-mocks (3.8.1)
+      rspec-support (~> 3.12.0)
+    rspec-mocks (3.12.6)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.8.0)
-    rspec-support (3.8.2)
+      rspec-support (~> 3.12.0)
+    rspec-support (3.12.1)
     ruby2_keywords (0.0.5)
-    sqlite3 (1.4.2)
+    sqlite3 (1.7.1-arm64-darwin)
+    stringio (3.1.0)
     thor (1.3.0)
     timeout (0.4.1)
     tzinfo (2.0.6)
@@ -201,13 +201,12 @@ GEM
     zeitwerk (2.6.12)
 
 PLATFORMS
-  ruby
-  x86_64-linux
+  arm64-darwin-23
 
 DEPENDENCIES
   active_recall!
   appraisal
-  rails (>= 6.0, <= 7.2)
+  rails (~> 7.0)
   rake (>= 12.0)
   rdoc
   rspec (>= 3.0)

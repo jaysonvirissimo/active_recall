@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -eo pipefail
+IFS=$'\n\t'
+set -vx
+
+appraisal=${1:-}
+
+if [ -z "$appraisal" ]; then
+  # Run tests for all appraisals if none is specified
+  bundle exec appraisal rake spec
+else
+  # Run tests for a specific appraisal
+  bundle exec appraisal "$appraisal" rake spec
+fi
