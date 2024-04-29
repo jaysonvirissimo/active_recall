@@ -22,6 +22,7 @@ ActiveRecord::Schema.define do
   create_table :active_recall_items do |t|
     t.references :deck
     t.references :source, polymorphic: true
+    t.float :easiness_factor, default: 2.5
     t.integer :box, default: 0
     t.integer :times_right, default: 0
     t.integer :times_wrong, default: 0
