@@ -21,7 +21,7 @@ module ActiveRecall
       if algorithm_class.type == :gradable
         update!(
           algorithm_class.score(**scoring_attributes.merge(grade: grade))
-        ).score
+        )
       else
         raise IncompatibleAlgorithmError, "#{algorithm_class.name} is a not an gradable algorithm, so is not compatible with the #score! method"
       end
