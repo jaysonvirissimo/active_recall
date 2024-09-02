@@ -78,5 +78,30 @@ describe ActiveRecall::SM2 do
         expect { subject }.to raise_error
       end
     end
+
+    context "with different box values" do
+          [
+            { box: 1, expected_interval: 1 },
+            { box: 2, expected_interval: 6 },
+            { box: 3, expected_interval: 15 },
+            { box: 4, expected_interval: 37 },
+            { box: 5, expected_interval: 93 },
+          ].each do |test_case|
+            context "when box is #{test_case[:box]}" do
+              before do
+                params[:box] = test_case[:box]
+                params[:times_right] = test_case[:box] - 1
+              end
+
+              it "calculates the correct interval" do
+                result = subject
+                expect(result[:box]).to eq(test_case[:box] + 1)
+                expect(result[:next_review]).to be_within(1.day).of(current_time + test_case[:expected_interval].days)
+              end
+            end
+          end
+        end
+
+
   end
 end
