@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+app_root = Dir.pwd
+app_name = File.basename(app_root)
+
+# Create tmp directory
+tmp_dir = File.join(app_root, 'tmp')
+FileUtils.mkdir_p(tmp_dir)
+
+# Define directories and file patterns to include in the search, excluding specific files and directories
+include_patterns = [
+  File.join(app_root, 'bin', '**', '*'),
+  File.join(app_root, 'lib', '**', '*'),
+  File.join(app_root, 'spec', '**', '*'),
+  File.join(app_root, '.github', '**', '*'),
+  File.join(app_root, '*.{md,rss,json,rb,gemspec,lock,yml,gitignore,rspec,tool-versions,Appraisals,Rakefile}')
+]
+
+# Find all matching files
+files = include_patterns.flat_map { |pattern| Dir.glob(pattern, File::FNM_DOTMATCH) }
+files.select! { |f| File.file?(f) }
+
+# Exclude the gemfiles directory and the top-level Gemfile.lock
+files.reject! do |file|
+  file.start_with?(File.join(app_root, 'gemfiles')) || file == File.join(app_root, 'Gemfile.lock')
+end
+
+# Output file
+output_file = File.join(tmp_dir, "#{app_name}_flat_file.txt")
+
+File.open(output_file, 'w') do |file|
+  files.each do |file_path|
+    relative_path = file_path.sub("#{app_root}/", '')
+    extension = File.extname(file_path).delete_prefix('.')
+
+    file.puts "#{relative_path}:"
+
+    content = File.read(file_path)
+    if extension == 'md'
+      file.puts content
+    else
+      file.puts "```#{extension}"
+      file.puts content
+      file.puts "```"
+    end
+
+    file.puts ""
+  end
+end
+
+# Print the path to the generated flat file
+puts "Flat file created at: #{output_file}"
