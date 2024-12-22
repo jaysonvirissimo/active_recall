@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ActiveRecall
   class SM2
     MIN_EASINESS_FACTOR = 1.3
@@ -24,19 +22,24 @@ module ActiveRecall
     end
 
     def initialize(box:, easiness_factor:, times_right:, times_wrong:, grade:, current_time: Time.current)
-      @box = box
+      @box = box # box serves as repetition number n
       @easiness_factor = easiness_factor || 2.5
       @times_right = times_right
       @times_wrong = times_wrong
       @grade = grade
       @current_time = current_time
-      @interval = [1, box].max
+      @interval = case box
+      when 0 then 1  # First review
+      when 1 then 6  # Second review
+      else 17       # Will be overwritten for boxes > 1
+      end
     end
 
     def score
       raise "Grade must be between 0-5!" unless GRADES.include?(@grade)
+      old_ef = @easiness_factor
       update_easiness_factor
-      update_repetition_and_interval
+      update_repetition_and_interval(old_ef)
 
       {
         box: @box,
@@ -51,13 +54,14 @@ module ActiveRecall
     private
 
     GRADES = [
-      5, # Perfect response. The learner recalls the information without hesitation.
-      4, # Correct response after a hesitation. The learner recalls the information but with some difficulty.
-      3, # Correct response recalled with serious difficulty. The learner struggles but eventually recalls the information.
-      2, # Incorrect response, but the learner was very close to the correct answer. This might involve recalling some of the information correctly but not all of it.
-      1, # Incorrect response, but the learner feels they should have remembered it. This is typically used when the learner has a sense of familiarity with the material but fails to recall it correctly.
-      0 # Complete blackout. The learner does not recall the information at all.
+      5, # Perfect response
+      4, # Correct response after a hesitation
+      3, # Correct response recalled with serious difficulty
+      2, # Incorrect response, but close
+      1, # Incorrect response with familiarity
+      0  # Complete blackout
     ].freeze
+
     REQUIRED_ATTRIBUTES = [
       :box,
       :easiness_factor,
@@ -71,25 +75,26 @@ module ActiveRecall
       @easiness_factor = [@easiness_factor, MIN_EASINESS_FACTOR].max
     end
 
-    def update_repetition_and_interval
+          def update_repetition_and_interval(old_ef)
       if @grade >= 3
-        @box += 1
-        @times_right += 1
-        @interval = case @box
-        when 1
+        @interval = if @box == 0
           1
-        when 2
+        elsif @box == 1
           6
         else
-          6 * (@easiness_factor ** (@box - 1))
+          last_interval = @box == 2 ? 6 : @interval
+          # First convert to float then round to avoid floating point issues
+          (last_interval.to_f * old_ef).round
         end
+
+        @box += 1
+        @times_right += 1
       else
         @box = 0
-        @times_wrong += 1
         @interval = 1
+        @times_wrong += 1
       end
     end
-
 
     def next_review
       @current_time + @interval.days
