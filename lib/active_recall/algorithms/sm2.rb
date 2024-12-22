@@ -81,7 +81,7 @@ module ActiveRecall
         when 2
           6
         else
-          (@interval || 1) * @easiness_factor
+          6 * (@easiness_factor ** (@box - 1))
         end
       else
         @box = 0
@@ -89,6 +89,7 @@ module ActiveRecall
         @interval = 1
       end
     end
+
 
     def next_review
       @current_time + @interval.days
