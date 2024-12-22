@@ -75,14 +75,14 @@ module ActiveRecall
       @easiness_factor = [@easiness_factor, MIN_EASINESS_FACTOR].max
     end
 
-          def update_repetition_and_interval(old_ef)
+    def update_repetition_and_interval(old_ef)
       if @grade >= 3
         @interval = if @box == 0
           1
         elsif @box == 1
           6
         else
-          last_interval = @box == 2 ? 6 : @interval
+          last_interval = (@box == 2) ? 6 : @interval
           # First convert to float then round to avoid floating point issues
           (last_interval.to_f * old_ef).round
         end
