@@ -41,5 +41,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "standard"
   spec.add_runtime_dependency "activerecord", ">= 7.0", "< 9.0"
   spec.add_runtime_dependency "activesupport", ">= 7.0", "< 9.0"
-  spec.required_ruby_version = ">= 3.1"
+  spec.required_ruby_version = ">= 3.2"
 end
