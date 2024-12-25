@@ -9,7 +9,7 @@ appraise "rails-7-1" do
 end
 
 appraise "rails-8-0" do
-  gem "nokogiri", ">= 1.18", "< 2.0"
+  gem "nokogiri", "~> 1.18"
   gem "rails", "~> 8.0"
   gem "sqlite3", ">= 2.1"
 end
