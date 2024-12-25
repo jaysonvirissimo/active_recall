@@ -248,6 +248,7 @@ PLATFORMS
 DEPENDENCIES
   active_recall!
   appraisal
+  nokogiri (>= 1.16, < 2.0)
   rails (~> 8.0)
   rake (>= 12.0)
   rdoc
