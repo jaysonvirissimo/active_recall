@@ -82,9 +82,8 @@ module ActiveRecall
         elsif @box == 1
           6
         else
-          last_interval = (@box == 2) ? 6 : @interval
-          # First convert to float then round to avoid floating point issues
-          (last_interval.to_f * old_ef).round
+          # Apply exponential scaling based on the box number
+          (6 * (old_ef**(@box - 1))).round
         end
 
         @box += 1
