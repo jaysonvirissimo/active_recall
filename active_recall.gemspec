@@ -41,6 +41,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "standard"
   spec.add_runtime_dependency "activerecord", ">= 7.0", "< 9.0"
   spec.add_runtime_dependency "activesupport", ">= 7.0", "< 9.0"
-  spec.add_runtime_dependency "net-protocol", ">= 0.1.2"
+  spec.add_runtime_dependency "net-smtp", ">= 0.5.0"
   spec.required_ruby_version = ">= 3.2"
 end
