@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "nokogiri", ">= 1.16", "< 2.0"
+gem "nokogiri", ">= 1.18", "< 2.0"
 gem "rails", "~> 8.0"
 gem "sqlite3", ">= 2.1"
 
