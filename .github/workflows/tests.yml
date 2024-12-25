@@ -39,8 +39,6 @@ jobs:
           bundler-cache: true
       - name: Install Appraisal Dependencies
         run: bundle exec appraisal install
-      - name: Test with Rails 6.1
-        run: bundle exec appraisal rails-6-1 rake spec
       - name: Test with Rails 7.0
         run: bundle exec appraisal rails-7-0 rake spec
       - name: Test with Rails 7.1
