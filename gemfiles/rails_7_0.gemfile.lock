@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    active_recall (2.1.1)
+    active_recall (2.1.2)
       activerecord (>= 7.0, < 9.0)
       activesupport (>= 7.0, < 9.0)
 
@@ -119,6 +119,7 @@ GEM
       net-smtp
     marcel (1.0.2)
     mini_mime (1.1.5)
+    mini_portile2 (2.8.8)
     minitest (5.21.2)
     mutex_m (0.2.0)
     net-imap (0.4.9.1)
@@ -131,7 +132,8 @@ GEM
     net-smtp (0.4.0.1)
       net-protocol
     nio4r (2.7.0)
-    nokogiri (1.16.0-arm64-darwin)
+    nokogiri (1.16.0)
+      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     parallel (1.24.0)
     parser (3.3.1.0)
@@ -216,7 +218,8 @@ GEM
       rubocop-ast (>= 1.30.0, < 2.0)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
-    sqlite3 (1.7.3-arm64-darwin)
+    sqlite3 (1.7.3)
+      mini_portile2 (~> 2.8.0)
     standard (1.35.1)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
@@ -243,6 +246,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-23
+  arm64-darwin-24
 
 DEPENDENCIES
   active_recall!
