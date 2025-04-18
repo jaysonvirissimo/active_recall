@@ -63,11 +63,10 @@ module ActiveRecall
     SEQUENCE = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765].freeze
 
     def fibonacci_number_at(index)
-      if (0...SEQUENCE.length).cover?(index)
-        SEQUENCE[index]
-      else
-        fibonacci_number_at(index - 1) + fibonacci_number_at(index - 2)
-      end
+      return SEQUENCE[index] if (0...SEQUENCE.length).cover?(index)
+
+      @fibonacci_cache ||= {}
+      @fibonacci_cache[index] ||= fibonacci_number_at(index - 1) + fibonacci_number_at(index - 2)
     end
 
     def next_review
