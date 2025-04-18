@@ -37,6 +37,8 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: false
+      - name: Bundle Install
+        run: bundle install
       - name: Install Appraisal Dependencies
         run: bundle exec appraisal install
       - name: Test with Rails 7.0
