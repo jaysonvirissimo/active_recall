@@ -13,6 +13,7 @@ begin
     gem "nokogiri", ">= 1.16.2"
   end
   if ruby_version >= Gem::Version.new("4.0.0")
+    gem "benchmark"
     gem "ostruct"
     gem "logger"
   end
