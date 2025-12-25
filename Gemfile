@@ -14,6 +14,7 @@ begin
   end
   if ruby_version >= Gem::Version.new("4.0.0")
     gem "ostruct"
+    gem "logger"
   end
 rescue
 end
