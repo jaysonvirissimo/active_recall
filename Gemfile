@@ -12,5 +12,8 @@ begin
   if ruby_version >= Gem::Version.new("3.4.0")
     gem "nokogiri", ">= 1.16.2"
   end
+  if ruby_version >= Gem::Version.new("4.0.0")
+    gem "ostruct"
+  end
 rescue
 end
