@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    active_recall (2.1.2)
+    active_recall (2.2.0)
       activerecord (>= 7.0, < 9.0)
       activesupport (>= 7.0, < 9.0)
 
@@ -242,6 +242,7 @@ GEM
 PLATFORMS
   arm64-darwin-23
   arm64-darwin-24
+  arm64-darwin-25
 
 DEPENDENCIES
   active_recall!

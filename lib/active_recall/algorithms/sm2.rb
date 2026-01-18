@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActiveRecall
   class SM2
     MIN_EASINESS_FACTOR = 1.3
@@ -38,7 +40,7 @@ module ActiveRecall
     def score
       raise "Grade must be between 0-5!" unless GRADES.include?(@grade)
       old_ef = @easiness_factor
-      update_easiness_factor
+      update_easiness_factor if @grade >= 3
       update_repetition_and_interval(old_ef)
 
       {
