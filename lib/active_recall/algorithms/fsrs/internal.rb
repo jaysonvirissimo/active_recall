@@ -7,6 +7,12 @@
 # pins activesupport to ~> 7.0, which excludes Rails 8 — incompatible with
 # this gem's Rails 8 support. Re-evaluate when an upstream release widens
 # the constraint (master already does).
+#
+# Local divergence from upstream:
+#   - schedule_new_state uses 1.minute / 5.minutes / 10.minutes instead of
+#     bare integers (which DateTime treats as days). Tracks upstream PR
+#     https://github.com/open-spaced-repetition/rb-fsrs/pull/9; remove this
+#     patch once a release with that fix is available.
 
 require "date"
 
@@ -235,9 +241,9 @@ module ActiveRecall
 
         def schedule_new_state(s, now)
           init_ds(s)
-          s.again.due = now + 60
-          s.hard.due = now + (5 * 60)
-          s.good.due = now + (10 * 60)
+          s.again.due = now + 1.minute
+          s.hard.due = now + 5.minutes
+          s.good.due = now + 10.minutes
           easy_interval = next_interval(s.easy.stability)
           s.easy.scheduled_days = easy_interval
           s.easy.due = now + easy_interval.days

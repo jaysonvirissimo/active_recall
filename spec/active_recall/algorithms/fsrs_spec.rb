@@ -99,6 +99,25 @@ describe ActiveRecall::FSRS do
         expect(result[:times_right]).to eq(0)
         expect(result[:times_wrong]).to eq(1)
       end
+
+      # Regression guard for the upstream rb-fsrs bug where schedule_new_state
+      # used bare integer arithmetic (`now + 60`), which DateTime treats as
+      # days. See upstream PR https://github.com/open-spaced-repetition/rb-fsrs/pull/9
+      # and the local-divergence note in algorithms/fsrs/internal.rb.
+      {1 => 1.minute, 2 => 5.minutes, 3 => 10.minutes}.each do |grade, expected_delta|
+        it "schedules grade #{grade} on a new card #{expected_delta.inspect} out, not days" do
+          result = described_class.score(**new_card_params.merge(grade: grade))
+          delta_seconds = (result[:next_review].to_time.utc - current_time).to_i
+          expect(delta_seconds).to eq(expected_delta.to_i)
+        end
+      end
+
+      it "schedules grade 4 (Easy) on a new card on a days-scale interval" do
+        result = described_class.score(**new_card_params.merge(grade: 4))
+        delta_days = (result[:next_review].to_time.utc - current_time) / 86_400.0
+        expect(delta_days).to be >= 1
+        expect(delta_days).to be <= 30
+      end
     end
 
     context "with an established REVIEW-state card" do
