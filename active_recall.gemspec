@@ -41,5 +41,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "standard"
   spec.add_runtime_dependency "activerecord", ">= 7.0", "< 9.0"
   spec.add_runtime_dependency "activesupport", ">= 7.0", "< 9.0"
+  # fsrs 0.9.2 is the first release that widens activesupport to allow Rails 8
+  # and ships the new-card scheduling fix (minute-vs-day in schedule_new_state).
+  # Do not relax this floor without verifying both still hold.
+  spec.add_runtime_dependency "fsrs", ">= 0.9.2", "< 1.0"
   spec.required_ruby_version = ">= 3.2"
 end

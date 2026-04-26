@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "active_recall/algorithms/fsrs/internal"
+require "fsrs"
 
 module ActiveRecall
   class FSRS
@@ -19,10 +19,10 @@ module ActiveRecall
     ].freeze
 
     GRADE_TO_RATING = {
-      1 => Internal::Rating::AGAIN,
-      2 => Internal::Rating::HARD,
-      3 => Internal::Rating::GOOD,
-      4 => Internal::Rating::EASY
+      1 => Fsrs::Rating::AGAIN,
+      2 => Fsrs::Rating::HARD,
+      3 => Fsrs::Rating::GOOD,
+      4 => Fsrs::Rating::EASY
     }.freeze
 
     def self.required_attributes
@@ -33,8 +33,8 @@ module ActiveRecall
       :gradable
     end
 
-    def self.score(**kwargs)
-      new(**kwargs).score
+    def self.score(**)
+      new(**).score
     end
 
     def initialize(box:, stability:, difficulty:, state:, lapses:,
@@ -43,7 +43,7 @@ module ActiveRecall
       @box = box || 0
       @stability = stability
       @difficulty = difficulty
-      @state = state || Internal::State::NEW
+      @state = state || Fsrs::State::NEW
       @lapses = lapses || 0
       @elapsed_days = elapsed_days || 0
       @scheduled_days = scheduled_days || 0
@@ -79,7 +79,7 @@ module ActiveRecall
     private
 
     def build_card
-      card = Internal::Card.new
+      card = Fsrs::Card.new
       card.stability = @stability if @stability
       card.difficulty = @difficulty if @difficulty
       card.state = @state
@@ -92,7 +92,7 @@ module ActiveRecall
     end
 
     def scheduler
-      scheduler = Internal::Scheduler.new
+      scheduler = Fsrs::Scheduler.new
       config = ActiveRecall.configuration
       scheduler.p.request_retention = config.fsrs_request_retention if config.fsrs_request_retention
       scheduler.p.maximum_interval = config.fsrs_maximum_interval if config.fsrs_maximum_interval

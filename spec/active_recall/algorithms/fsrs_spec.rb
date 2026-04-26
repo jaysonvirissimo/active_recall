@@ -43,6 +43,13 @@ describe ActiveRecall::FSRS do
     end
   end
 
+  describe "upstream dependency boundary" do
+    it "loads the upstream fsrs gem instead of a vendored internal copy" do
+      expect(defined?(Fsrs::Scheduler)).to eq("constant")
+      expect(ActiveRecall::FSRS.const_defined?(:Internal, false)).to be(false)
+    end
+  end
+
   describe ".score" do
     context "grade validation" do
       it "raises when grade is below 1" do
@@ -100,10 +107,8 @@ describe ActiveRecall::FSRS do
         expect(result[:times_wrong]).to eq(1)
       end
 
-      # Regression guard for the upstream rb-fsrs bug where schedule_new_state
-      # used bare integer arithmetic (`now + 60`), which DateTime treats as
-      # days. See upstream PR https://github.com/open-spaced-repetition/rb-fsrs/pull/9
-      # and the local-divergence note in algorithms/fsrs/internal.rb.
+      # Regression guard for ActiveRecall's expected behavior when delegating
+      # new-card scheduling to the upstream fsrs gem.
       {1 => 1.minute, 2 => 5.minutes, 3 => 10.minutes}.each do |grade, expected_delta|
         it "schedules grade #{grade} on a new card #{expected_delta.inspect} out, not days" do
           result = described_class.score(**new_card_params.merge(grade: grade))
@@ -126,7 +131,7 @@ describe ActiveRecall::FSRS do
           box: 3,
           stability: 10.0,
           difficulty: 5.0,
-          state: ActiveRecall::FSRS::Internal::State::REVIEW,
+          state: Fsrs::State::REVIEW,
           lapses: 0,
           elapsed_days: 10,
           scheduled_days: 10,
@@ -170,7 +175,7 @@ describe ActiveRecall::FSRS do
           box: 3,
           stability: 10.0,
           difficulty: 5.0,
-          state: ActiveRecall::FSRS::Internal::State::REVIEW,
+          state: Fsrs::State::REVIEW,
           lapses: 0,
           elapsed_days: 10,
           scheduled_days: 10,
