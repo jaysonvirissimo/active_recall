@@ -28,6 +28,12 @@ ActiveRecord::Schema.define do
     t.integer :times_wrong, default: 0
     t.timestamp :last_reviewed
     t.timestamp :next_review
+    t.float :stability
+    t.float :difficulty
+    t.integer :state, default: 0
+    t.integer :lapses, default: 0
+    t.integer :elapsed_days, default: 0
+    t.integer :scheduled_days, default: 0
     t.timestamps
   end
   add_index :active_recall_items, %i[source_id source_type]

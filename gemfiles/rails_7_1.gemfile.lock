@@ -132,7 +132,14 @@ GEM
     net-smtp (0.4.0.1)
       net-protocol
     nio4r (2.7.0)
+    nokogiri (1.18.7)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
     nokogiri (1.18.7-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.18.7-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.18.7-x86_64-linux-gnu)
       racc (~> 1.4)
     parallel (1.24.0)
     parser (3.3.1.0)
@@ -244,9 +251,10 @@ GEM
     zeitwerk (2.6.12)
 
 PLATFORMS
-  arm64-darwin-23
-  arm64-darwin-24
-  arm64-darwin-25
+  arm64-darwin
+  ruby
+  x86_64-darwin
+  x86_64-linux
 
 DEPENDENCIES
   active_recall!
