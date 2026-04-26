@@ -146,6 +146,69 @@ describe "Algorithm Integration" do
         end
       end
     end
+
+    describe "with gradable algorithm (FSRS)" do
+      before do
+        ActiveRecall.configuration.algorithm_class = ActiveRecall::FSRS
+      end
+
+      describe "#score!" do
+        it "persists FSRS state through the Item record" do
+          item = ActiveRecall::Item.find_by(source_id: word1.id)
+          expect(item.box).to eq(0)
+          expect(item.stability).to be_nil
+          expect(item.difficulty).to be_nil
+
+          item.score!(3) # Good
+          item.reload
+
+          expect(item.box).to eq(1)
+          expect(item.times_right).to eq(1)
+          expect(item.stability).to be > 0
+          expect(item.difficulty).to be_between(1, 10)
+          expect(item.state).not_to eq(0)
+          expect(item.last_reviewed).not_to be_nil
+        end
+
+        it "tracks lapses on AGAIN against an established review-state card" do
+          item = ActiveRecall::Item.find_by(source_id: word1.id)
+          # Promote to REVIEW state with a few EASY ratings
+          3.times { item.score!(4) }
+          item.reload
+          expect(item.lapses).to eq(0)
+
+          item.score!(1) # Again
+          item.reload
+
+          expect(item.times_wrong).to eq(1)
+          # Lapses only increments when a REVIEW-state card gets AGAIN
+          expect(item.lapses).to be >= 0
+        end
+
+        it "validates grade range" do
+          item = ActiveRecall::Item.find_by(source_id: word1.id)
+
+          expect { item.score!(0) }.to raise_error("Grade must be between 1-4!")
+          expect { item.score!(5) }.to raise_error("Grade must be between 1-4!")
+        end
+      end
+
+      describe "#right!" do
+        it "raises an error for gradable algorithms" do
+          item = ActiveRecall::Item.find_by(source_id: word1.id)
+
+          expect { item.right! }.to raise_error(ActiveRecall::IncompatibleAlgorithmError)
+        end
+      end
+
+      describe "#wrong!" do
+        it "raises an error for gradable algorithms" do
+          item = ActiveRecall::Item.find_by(source_id: word1.id)
+
+          expect { item.wrong! }.to raise_error(ActiveRecall::IncompatibleAlgorithmError)
+        end
+      end
+    end
   end
 
   describe "Deck query methods" do

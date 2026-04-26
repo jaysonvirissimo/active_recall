@@ -119,7 +119,6 @@ GEM
       net-smtp
     marcel (1.0.2)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.5)
     minitest (5.18.1)
     mutex_m (0.2.0)
     net-imap (0.4.9.1)
@@ -132,8 +131,7 @@ GEM
     net-smtp (0.4.0.1)
       net-protocol
     nio4r (2.7.0)
-    nokogiri (1.18.7)
-      mini_portile2 (~> 2.8.2)
+    nokogiri (1.18.7-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.18.7-x86_64-linux-gnu)
       racc (~> 1.4)
@@ -217,8 +215,7 @@ GEM
       rubocop-ast (>= 1.30.0, < 2.0)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
-    sqlite3 (2.5.0)
-      mini_portile2 (~> 2.8.0)
+    sqlite3 (2.5.0-arm64-darwin)
     sqlite3 (2.5.0-x86_64-linux-gnu)
     standard (1.35.1)
       language_server-protocol (~> 3.17.0.2)
@@ -244,7 +241,7 @@ GEM
     zeitwerk (2.6.12)
 
 PLATFORMS
-  ruby
+  arm64-darwin-25
   x86_64-linux
 
 DEPENDENCIES
