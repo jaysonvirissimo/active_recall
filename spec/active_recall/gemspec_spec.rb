@@ -16,7 +16,7 @@ describe "active_recall.gemspec" do
 
   it "does not keep vendored FSRS license documentation" do
     vendored_licenses_path = File.expand_path(
-      File.join("..", "..", %w[VEN DORED_LICENSES.md].join),
+      File.join("..", "..", "VENDORED_LICENSES.md"),
       __dir__
     )
 

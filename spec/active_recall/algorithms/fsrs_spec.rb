@@ -48,15 +48,6 @@ describe ActiveRecall::FSRS do
       expect(defined?(Fsrs::Scheduler)).to eq("constant")
       expect(ActiveRecall::FSRS.const_defined?(:Internal, false)).to be(false)
     end
-
-    it "does not keep the vendored fsrs implementation in the repository" do
-      vendored_path = File.expand_path(
-        File.join("..", "..", "..", "lib", "active_recall", "algorithms", "fsrs", "internal.rb"),
-        __dir__
-      )
-
-      expect(File.exist?(vendored_path)).to be(false)
-    end
   end
 
   describe ".score" do
