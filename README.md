@@ -160,16 +160,22 @@ user.words.expired #=> [word]
 | `1` | Incorrect response with familiarity |
 | `0` | Complete blackout |
 
-Grades **≥ 3** count as a success: the box advances and `times_right` increments. Grades **< 3** reset the box to `0` and increment `times_wrong`. Each item's `easiness_factor` starts at `2.5` and is clamped to a minimum of `1.3`.
+Grades **≥ 3** count as a success: the box advances and `times_right` increments. Grades **< 3** reset the box to `0` and increment `times_wrong`. The `easiness_factor` is updated on **every** grade (including failures), starts at `2.5`, and is clamped to a minimum of `1.3` — so a poor grade lowers the EF and shortens future intervals.
+
+Intervals follow the canonical SM-2 recurrence: `I(1) = 1`, `I(2) = 6`, and `I(n) = round(I(n − 1) × EF)` for `n > 2`. Fractional intervals use ordinary rounding (matching the published SuperMemo 2 source), so six consecutive perfect reviews schedule at `1, 6, 16, 45, 131, 393` days. The prior interval is recovered from the card's stored `last_reviewed`/`next_review`, so **no extra columns are required**.
+
+A failed card is scheduled one day out (`next_review = now + 1 day`) and does **not** reappear in `review`/`failed` until that day arrives.
 
 ```ruby
 user.words << word
 
 user.score!(5, word)  # perfect recall — box advances, EF rises
-user.score!(2, word)  # incorrect — box resets to 0
+user.score!(2, word)  # incorrect — box resets to 0, EF drops, due again tomorrow
 ```
 
 Calling `user.right_answer_for!(word)` while SM2 is configured raises `ActiveRecall::IncompatibleAlgorithmError` — use `score!` instead.
+
+> **Switching algorithms on existing cards is unsupported.** Each card's `box`, `next_review`, and `last_reviewed` are written by whichever algorithm scored it, and SM-2 derives its prior interval from those timestamps. Pointing SM-2 at cards previously scheduled by another algorithm will misread their state. Choose an algorithm before reviewing, or reset/migrate card state before switching.
 
 ## Usage with FSRS
 

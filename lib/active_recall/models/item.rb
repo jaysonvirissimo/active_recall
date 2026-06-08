@@ -6,8 +6,14 @@ module ActiveRecall
 
     belongs_to :deck
 
-    scope :failed, -> { where(["box = ? and last_reviewed is not null", 0]) }
     scope :untested, -> { where(["box = ? and last_reviewed is null", 0]) }
+
+    # Lapsed (box 0, already reviewed) cards that are due now. A null next_review
+    # means "review immediately" (binary algorithms reset this way); a future
+    # next_review (e.g. SM-2's one-day failure interval) is excluded until due.
+    def self.failed(current_time: Time.current)
+      where(["box = ? and last_reviewed is not null and (next_review is null or next_review <= ?)", 0, current_time])
+    end
 
     def self.expired(current_time: Time.current)
       where(["box > ? and next_review <= ?", 0, current_time])
