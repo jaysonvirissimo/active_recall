@@ -95,6 +95,7 @@ bundle exec rake release
    - Binary algorithms: LeitnerSystem (default), SoftLeitnerSystem, FibonacciSequence
    - Gradable algorithm: SM2
    - All algorithms are stateless; they accept current state and return new state as a hash
+   - SM2 follows the canonical recurrence `I(1)=1, I(2)=6, I(n)=round(I(n-1) * EF)`, recovering the prior interval from the card's `last_reviewed`/`next_review` (no extra columns), updates EF on every grade (clamped to 1.3), and schedules failures one day out. Because SM2 reads those timestamps as its own state, switching algorithms on already-reviewed cards is unsupported without a state reset/migration.
 
 5. **Configuration** (lib/active_recall/configuration.rb)
    - Global configuration via `ActiveRecall.configure`

@@ -105,12 +105,11 @@ describe "Algorithm Integration" do
 
         it "handles failed responses correctly" do
           item = ActiveRecall::Item.find_by(source_id: word1.id)
-          # First progress to box 2
+          # First progress to box 2 (EF: 2.5 -> 2.6 -> 2.7)
           item.score!(5)
           item.score!(5)
           item.reload
           expect(item.box).to eq(2)
-          original_ef = item.easiness_factor
 
           # Then fail
           item.score!(2)
@@ -118,8 +117,8 @@ describe "Algorithm Integration" do
 
           expect(item.box).to eq(0)
           expect(item.times_wrong).to eq(1)
-          # EF should be preserved on failure (canonical SM2)
-          expect(item.easiness_factor).to eq(original_ef)
+          # EF is lowered on failure (canonical SM2 updates EF on every grade): 2.7 - 0.32
+          expect(item.easiness_factor).to be_within(0.0001).of(2.38)
         end
 
         it "validates grade range" do
@@ -143,6 +142,27 @@ describe "Algorithm Integration" do
           item = ActiveRecall::Item.find_by(source_id: word1.id)
 
           expect { item.wrong! }.to raise_error(ActiveRecall::IncompatibleAlgorithmError)
+        end
+      end
+
+      describe "failed-card scheduling" do
+        it "does not surface a failed card in review/failed until its next_review arrives" do
+          item = ActiveRecall::Item.find_by(source_id: word1.id)
+          item.score!(5) # advance to box 1
+          item.score!(2) # fail: box 0, next_review = now + 1 day
+          item.reload
+
+          expect(item.box).to eq(0)
+          expect(item.next_review).to be > Time.current
+
+          # Scheduled for tomorrow, so it is not yet due
+          expect(user.words.failed).not_to include(word1)
+          expect(user.words.review).not_to include(word1)
+
+          # Once the scheduled day arrives, it becomes due again
+          item.update!(next_review: 1.minute.ago)
+          expect(user.words.failed).to include(word1)
+          expect(user.words.review.to_a).to include(word1)
         end
       end
     end

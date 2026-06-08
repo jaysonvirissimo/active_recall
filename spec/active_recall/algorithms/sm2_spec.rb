@@ -12,7 +12,9 @@ describe ActiveRecall::SM2 do
         :easiness_factor,
         :grade,
         :times_right,
-        :times_wrong
+        :times_wrong,
+        :last_reviewed,
+        :next_review
       )
     end
   end
@@ -127,9 +129,9 @@ describe ActiveRecall::SM2 do
           expect(subject[:box]).to eq(0)
         end
 
-        it "preserves the easiness factor (canonical SM2 behavior)" do
-          # Per canonical SM2: "start repetitions from beginning WITHOUT changing the E-Factor"
-          expect(subject[:easiness_factor]).to eq(2.5)
+        it "lowers the easiness factor by 0.32" do
+          # Canonical SM2 updates EF on every grade. Grade 2: 2.5 - 0.32 = 2.18
+          expect(subject[:easiness_factor]).to be_within(0.0001).of(2.18)
         end
 
         it "sets a one day interval" do
@@ -149,8 +151,9 @@ describe ActiveRecall::SM2 do
           expect(subject[:box]).to eq(0)
         end
 
-        it "preserves the easiness factor (canonical SM2 behavior)" do
-          expect(subject[:easiness_factor]).to eq(2.5)
+        it "lowers the easiness factor by 0.54" do
+          # Grade 1: 2.5 - 0.54 = 1.96
+          expect(subject[:easiness_factor]).to be_within(0.0001).of(1.96)
         end
 
         it "sets a one day interval" do
@@ -170,8 +173,9 @@ describe ActiveRecall::SM2 do
           expect(subject[:box]).to eq(0)
         end
 
-        it "preserves the easiness factor (canonical SM2 behavior)" do
-          expect(subject[:easiness_factor]).to eq(2.5)
+        it "lowers the easiness factor by 0.80" do
+          # Grade 0: 2.5 - 0.80 = 1.70
+          expect(subject[:easiness_factor]).to be_within(0.0001).of(1.70)
         end
 
         it "sets a one day interval" do
@@ -214,8 +218,9 @@ describe ActiveRecall::SM2 do
           expect(subject[:box]).to eq(0)
         end
 
-        it "preserves the easiness factor" do
-          expect(subject[:easiness_factor]).to eq(2.5)
+        it "lowers the easiness factor by 0.32" do
+          # Grade 2: 2.5 - 0.32 = 2.18
+          expect(subject[:easiness_factor]).to be_within(0.0001).of(2.18)
         end
 
         it "sets a one day interval" do
@@ -224,98 +229,102 @@ describe ActiveRecall::SM2 do
       end
     end
 
-    context "with higher box values (exponential interval)" do
-      let(:params) do
+    context "with higher box values (interval recurrence)" do
+      # Canonical SM2 recurrence: I(n) = round(I(n-1) * EF), where the prior
+      # interval is recovered from the card's stored last_reviewed/next_review
+      # and EF is the value from before this review's update.
+      def params_for(box:, easiness_factor:, previous_interval:, grade: 5)
         {
           box: box,
-          easiness_factor: 2.5,
+          easiness_factor: easiness_factor,
           times_right: box,
           times_wrong: 0,
           grade: grade,
+          last_reviewed: current_time,
+          next_review: current_time + previous_interval.days,
           current_time: current_time
         }
       end
 
-      context "for box 2 with grade 5" do
-        let(:box) { 2 }
-        let(:grade) { 5 }
+      context "for box 2 with grade 5 and a prior 6-day interval" do
+        let(:params) { params_for(box: 2, easiness_factor: 2.5, previous_interval: 6) }
 
         it "moves to box 3" do
           expect(subject[:box]).to eq(3)
         end
 
-        it "calculates interval as 6 * EF^(box-1) = 6 * 2.5^1 = 15 days" do
-          # Note: interval uses old_ef (2.5) before the EF update
+        it "schedules round(6 * 2.5) = 15 days" do
           expect(subject[:next_review]).to eq(current_time + 15.days)
         end
       end
 
-      context "for box 3 with grade 5" do
-        let(:box) { 3 }
-        let(:grade) { 5 }
+      context "for box 3 with grade 5 and a prior 16-day interval" do
+        let(:params) { params_for(box: 3, easiness_factor: 2.7, previous_interval: 16) }
 
         it "moves to box 4" do
           expect(subject[:box]).to eq(4)
         end
 
-        it "calculates interval as 6 * EF^(box-1) = 6 * 2.5^2 = 38 days (rounded)" do
-          expect(subject[:next_review]).to eq(current_time + 38.days)
+        it "schedules round(16 * 2.7) = 43 days" do
+          expect(subject[:next_review]).to eq(current_time + 43.days)
         end
       end
 
-      context "for box 7 with grade 5" do
-        let(:box) { 7 }
-        let(:grade) { 5 }
-        let(:expected_interval) { (6 * (2.5**6)).round }
+      context "with the minimum easiness factor and a prior 17-day interval" do
+        let(:params) { params_for(box: 5, easiness_factor: 1.3, previous_interval: 17) }
 
-        it "calculates the correct exponential interval" do
-          days_until_next_review = ((subject[:next_review] - current_time) / 1.day).round
-          expect(days_until_next_review).to eq(expected_interval)
-        end
-
-        it "increments the box correctly" do
-          expect(subject[:box]).to eq(8)
+        it "schedules a shorter interval round(17 * 1.3) = 22 days" do
+          expect(subject[:next_review]).to eq(current_time + 22.days)
         end
       end
 
-      context "for box 5 with varying easiness factors" do
-        let(:box) { 5 }
-        let(:grade) { 5 }
-
-        context "with EF 2.5" do
-          let(:params) do
-            {
-              box: 5,
-              easiness_factor: 2.5,
-              times_right: 5,
-              times_wrong: 0,
-              grade: 5,
-              current_time: current_time
-            }
-          end
-
-          it "calculates interval as 6 * 2.5^4 = 234 days (rounded)" do
-            expect(subject[:next_review]).to eq(current_time + 234.days)
-          end
+      context "when the prior schedule is unavailable" do
+        let(:params) do
+          {
+            box: 5,
+            easiness_factor: 2.5,
+            times_right: 5,
+            times_wrong: 0,
+            grade: 5,
+            current_time: current_time
+          }
         end
 
-        context "with EF 1.3 (minimum)" do
-          let(:params) do
-            {
-              box: 5,
-              easiness_factor: 1.3,
-              times_right: 5,
-              times_wrong: 0,
-              grade: 5,
-              current_time: current_time
-            }
-          end
-
-          it "calculates a shorter interval" do
-            # 6 * 1.3^4 = 17.15 ≈ 17 days
-            expect(subject[:next_review]).to eq(current_time + 17.days)
-          end
+        it "falls back to the I(2)=6 prior interval, scheduling round(6 * 2.5) = 15 days" do
+          expect(subject[:next_review]).to eq(current_time + 15.days)
         end
+      end
+    end
+
+    context "across a sequence of consecutive perfect reviews" do
+      it "reproduces the published SM2 interval sequence (1, 6, 16, 45, 131, 393)" do
+        expected_intervals = [1, 6, 16, 45, 131, 393]
+        actual_intervals = []
+
+        state = {box: 0, easiness_factor: 2.5, times_right: 0, times_wrong: 0}
+        last_reviewed = nil
+        next_review = nil
+        review_time = current_time
+
+        expected_intervals.each do
+          result = described_class.score(
+            **state,
+            grade: 5,
+            last_reviewed: last_reviewed,
+            next_review: next_review,
+            current_time: review_time
+          )
+
+          interval = ((result[:next_review] - review_time) / 1.day).round
+          actual_intervals << interval
+
+          state = result.slice(:box, :easiness_factor, :times_right, :times_wrong)
+          last_reviewed = result[:last_reviewed]
+          next_review = result[:next_review]
+          review_time = result[:next_review]
+        end
+
+        expect(actual_intervals).to eq(expected_intervals)
       end
     end
 
@@ -413,11 +422,12 @@ describe ActiveRecall::SM2 do
       end
 
       context "grades 0-2 (failures)" do
-        [0, 1, 2].each do |failing_grade|
+        # EF is updated on every grade, including failures (canonical SM2).
+        {0 => 1.70, 1 => 1.96, 2 => 2.18}.each do |failing_grade, expected_ef|
           context "grade #{failing_grade}" do
             let(:grade) { failing_grade }
-            it "preserves EF (canonical SM2: don't change EF on failure)" do
-              expect(subject[:easiness_factor]).to eq(initial_ef)
+            it "updates EF to #{expected_ef}" do
+              expect(subject[:easiness_factor]).to be_within(0.0001).of(expected_ef)
             end
 
             it "resets box to 0" do
@@ -447,14 +457,14 @@ describe ActiveRecall::SM2 do
         state = result.slice(:box, :easiness_factor, :times_right, :times_wrong)
         result = described_class.score(**state, grade: 2, current_time: current_time + 1.day)
         expect(result[:box]).to eq(0)
-        expect(result[:easiness_factor]).to eq(2.6) # EF preserved on failure
+        expect(result[:easiness_factor]).to be_within(0.0001).of(2.28) # 2.6 - 0.32 on failure
         expect(result[:times_wrong]).to eq(1)
 
         # Third review: perfect
         state = result.slice(:box, :easiness_factor, :times_right, :times_wrong)
         result = described_class.score(**state, grade: 5, current_time: current_time + 2.days)
         expect(result[:box]).to eq(1)
-        expect(result[:easiness_factor]).to eq(2.7)
+        expect(result[:easiness_factor]).to be_within(0.0001).of(2.38) # 2.28 + 0.10
         expect(result[:times_right]).to eq(2)
       end
     end
